@@ -45,7 +45,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class autoDriveSample extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareJoeBot2018      robot   = new HardwareJoeBot2018();   // Use a Pushbot's hardware
+    HardwareJoeBot2019      robot   = new HardwareJoeBot2019();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
 
