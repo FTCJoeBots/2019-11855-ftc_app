@@ -52,6 +52,9 @@ public class HardwareJoeBot2019 {
     public DcMotor motor3 = null; // Right Rear
     public DcMotor liftMotor = null;
 
+    public Servo foundationClamp = null;
+
+
     // Declare Sensors
     public BNO055IMU imu;                  // The IMU sensor object
 
