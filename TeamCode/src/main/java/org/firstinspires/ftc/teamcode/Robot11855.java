@@ -63,6 +63,8 @@ public class Robot11855 {
     private ElapsedTime runtime = new ElapsedTime();
 
 
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -96,9 +98,9 @@ public class Robot11855 {
         myOpMode = opMode;
 
         // Define and Initialize Motors
-        turrentMotor = hwMap.dcMotor.get("motor0");
-        shoulderMotor = hwMap.dcMotor.get("motor1");
-        ristMotor = hwMap.dcMotor.get("motor2");
+        turrentMotor = hwMap.dcMotor.get("turretMotor");
+        shoulderMotor = hwMap.dcMotor.get("shoulderMotor");
+        ristMotor = hwMap.dcMotor.get("wristMotor");
 
         //Define and Intialize Servos
 
@@ -166,6 +168,23 @@ public class Robot11855 {
 
 
     }
+
+    public void rotateTurret(double turretPower) {
+
+        turrentMotor.setPower(turretPower);
+
+    }
+
+    public void stopTurret() {
+
+        turrentMotor.setPower(0);
+
+    }
+
+
+
+
+
 
 }
 
