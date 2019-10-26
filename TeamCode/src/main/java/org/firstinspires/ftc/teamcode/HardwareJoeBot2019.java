@@ -50,7 +50,17 @@ public class HardwareJoeBot2019 {
     public DcMotor motor1 = null; // Right Front
     public DcMotor motor2 = null; // Left Rear
     public DcMotor motor3 = null; // Right Rear
-    public DcMotor liftMotor = null;
+    public DcMotor turretMotor = null;
+    public DcMotor shoulderMotor = null;
+    public DcMotor wristMotor = null;
+
+    //Declare Servo
+
+    public Servo clampServo = null;
+    public Servo foundationClamp = null;
+
+
+
 
     // Declare Sensors
     public BNO055IMU imu;                  // The IMU sensor object
@@ -86,6 +96,8 @@ public class HardwareJoeBot2019 {
 
     // Declare Static members for calculations
     //static final double COUNTS_PER_MOTOR_REV    = 1120;
+    static final double CLAMP_MAX_POSITION = 0.99;
+    static final double CLAMP_SERVO_MIN = 0.02;
     static final double COUNTS_PER_MOTOR_REV = 780;
 
     static final double DRIVE_GEAR_REDUCTION = 1;
@@ -96,10 +108,21 @@ public class HardwareJoeBot2019 {
     static final double LIFT_GEAR_REDUCTION = 1;
     static final double LIFT_COUNTS_PER_MOTOR_REV = 4.0;
     static final double LIFT_COUNTS_PER_INCH = (LIFT_THREADS_PER_INCH * LIFT_GEAR_REDUCTION * LIFT_COUNTS_PER_MOTOR_REV);
+
+    static final double SHOULDER_MIN_POS = 0;
+    static final double SHOULDER_MAX_POS = 4200;
+
+    static final double WRIST_START_POS = 0;
+    static final double WRIST_MIN_POS = -100;
+    static final double WRIST_MAX_POS = -250;
+
+
     /* Constructor */
     public HardwareJoeBot2019() {
 
     }
+
+
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap, LinearOpMode opMode) {
@@ -113,7 +136,15 @@ public class HardwareJoeBot2019 {
         motor1 = hwMap.dcMotor.get("motor1");
         motor2 = hwMap.dcMotor.get("motor2");
         motor3 = hwMap.dcMotor.get("motor3");
-        liftMotor = hwMap.dcMotor.get("liftMotor");
+        turretMotor = hwMap.dcMotor.get("turretMotor");
+        shoulderMotor = hwMap.dcMotor.get("shoulderMotor");
+        wristMotor = hwMap.dcMotor.get("wristMotor");
+
+
+        // Define and Initialize Servos
+        clampServo = hwMap.servo.get("clampServo");
+        clampServo.setPosition(CLAMP_MAX_POSITION);
+
 
         //liftBucketMotor = hwMap.dcMotor.get("liftBucketMotor");
         //mainBucketMotor = hwMap.dcMotor.get("mainBucketMotor");
@@ -124,14 +155,21 @@ public class HardwareJoeBot2019 {
         motor1.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
         motor2.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         motor3.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
-        liftMotor.setDirection(DcMotor.Direction.FORWARD); //set to FORWARD (UP) if using AndyMark motors
+        turretMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        shoulderMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
 
         // Set all motors to zero power
         motor0.setPower(0);
         motor1.setPower(0);
         motor2.setPower(0);
         motor3.setPower(0);
-        liftMotor.setPower(0);
+        turretMotor.setPower(0);
+        shoulderMotor.setPower(0);
+        wristMotor.setPower(0);
+
         myOpMode.telemetry.addLine("initialized motor power to zero");
         myOpMode.telemetry.update();
 
@@ -145,7 +183,16 @@ public class HardwareJoeBot2019 {
         motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        shoulderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        shoulderMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
 
         // IMU Initializaiton
         // Set up the parameters with which we will use our IMU. Note that integration
@@ -279,6 +326,10 @@ public class HardwareJoeBot2019 {
         motor1.setPower(0);
         motor2.setPower(0);
         motor3.setPower(0);
+        turretMotor.setPower(0);
+        shoulderMotor.setPower(0);
+        wristMotor.setPower(0);
+
         myOpMode.telemetry.addLine("initialized motor power to zero");
         myOpMode.telemetry.update();
 
@@ -653,6 +704,85 @@ public class HardwareJoeBot2019 {
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // Servo open and close method
+
+    public void servoOpen() {
+        clampServo.setPosition(CLAMP_MAX_POSITION);
+
+    }
+
+
+
+
+    public void servoClose ()
+    {
+        clampServo.setPosition(CLAMP_SERVO_MIN);
+
+
+    }
+
+    public void rotateTurret(double turretPower) {
+
+        turretMotor.setPower(turretPower);
+
+    }
+
+    public void stopTurret() {
+
+        turretMotor.setPower(0);
+
+    }
+
+
+
+    public void wristUp() {
+        wristMotor.setPower(0.1);
+    }
+
+    public void wristDown(){
+        wristMotor.setPower(-0.1);
+    }
+
+    public void shoulderUp() {
+        shoulderMotor.setPower(0.1);
+    }
+
+    public void shouldDown() {
+        shoulderMotor.setPower(-0.1);
+    }
+
+
+    int shoulderPos; //shoulder max position=4200)
+    int targetPos;
+
+    int wristPos = -100-(shoulderPos/28);
+
+    public void moveShoulder(int targetPos) {
+        shoulderPos = targetPos;
+        wristPos = (-100 - (shoulderPos/28));
+
+        // TODO: Add error/bounds checking
+        // if shoulder position is greater than 4200, then it stays at 4200
+        
+        shoulderMotor.setTargetPosition(shoulderPos);
+        wristMotor.setTargetPosition(wristPos);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public void liftMotorInches(double inches, double power){
 
         // Declare needed variables
@@ -662,11 +792,6 @@ public class HardwareJoeBot2019 {
         // Check to make sure the OpMode is still active; If it isn't don't run the method
         if (myOpMode.opModeIsActive()) {
 
-            // Determine new target positions for each wheel
-            newliftMotorTarget = liftMotor.getCurrentPosition() + (int) (inches * LIFT_COUNTS_PER_INCH);
-
-            // Send target Positions to motors
-            liftMotor.setTargetPosition(newliftMotorTarget);
 
             // Set Robot to RUN_TO_POSITION mode
             setMode(DcMotor.RunMode.RUN_TO_POSITION);
