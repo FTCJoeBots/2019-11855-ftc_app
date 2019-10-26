@@ -45,6 +45,8 @@ import static java.lang.StrictMath.abs;
 public class Robot11855 {
     /* Public OpMode members. */
 
+    HardwareJoeBot2018 robot = new HardwareJoeBot2018();
+
     // Declare Motors
     public DcMotor turrentMotor = null;
     public DcMotor shoulderMotor = null;
