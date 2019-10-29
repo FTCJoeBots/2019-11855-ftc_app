@@ -140,24 +140,18 @@ public class teleOpSimpleMecanum extends LinearOpMode {
             }
             prevStateB = currStateB;
 
-            // FOR TESTING PURPOSES ONLY
             // Manually move wrist and shoulder based on dpad
             if (gamepad2.dpad_up) {
-                robot.shoulderUp();
+                robot.moveShoulder(robot.shoulderMotor.getCurrentPosition() + 100);
             } else if (gamepad2.dpad_down) {
-                robot.shouldDown();
-            } else {
-                robot.shoulderMotor.setPower(0);
+                robot.moveShoulder(robot.shoulderMotor.getCurrentPosition() - 100);
             }
 
             if (gamepad2.dpad_left) {
-                robot.wristUp();
-            } else if (gamepad2.dpad_right) {
-                robot.wristDown();
-            } else {
-                robot.wristMotor.setPower(0);
-            }
 
+            } else if (gamepad2.dpad_right) {
+
+            }
 
             /*
             if (gamepad2.right_trigger > 0) {

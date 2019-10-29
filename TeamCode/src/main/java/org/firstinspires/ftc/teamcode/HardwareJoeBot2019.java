@@ -109,12 +109,12 @@ public class HardwareJoeBot2019 {
     static final double LIFT_COUNTS_PER_MOTOR_REV = 4.0;
     static final double LIFT_COUNTS_PER_INCH = (LIFT_THREADS_PER_INCH * LIFT_GEAR_REDUCTION * LIFT_COUNTS_PER_MOTOR_REV);
 
-    static final double SHOULDER_MIN_POS = 0;
-    static final double SHOULDER_MAX_POS = 4200;
+    static final int SHOULDER_MIN_POS = 0;
+    static final int SHOULDER_MAX_POS = 4200;
 
-    static final double WRIST_START_POS = 0;
-    static final double WRIST_MIN_POS = -100;
-    static final double WRIST_MAX_POS = -250;
+    static final int WRIST_START_POS = 0;
+    static final int WRIST_MIN_POS = -100;
+    static final int WRIST_MAX_POS = -250;
 
 
     /* Constructor */
@@ -191,6 +191,14 @@ public class HardwareJoeBot2019 {
 
         shoulderMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        //set shoulderMotor to RUN_TO_POSITION mode
+        moveShoulder(SHOULDER_MIN_POS);
+        shoulderMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        shoulderMotor.setPower(.2);
+        wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wristMotor.setPower(.2);
 
 
 
@@ -735,35 +743,37 @@ public class HardwareJoeBot2019 {
 
 
 
-    public void wristUp() {
-        wristMotor.setPower(0.1);
-    }
-
-    public void wristDown(){
-        wristMotor.setPower(-0.1);
-    }
-
-    public void shoulderUp() {
-        shoulderMotor.setPower(0.1);
-    }
-
-    public void shouldDown() {
-        shoulderMotor.setPower(-0.1);
-    }
-
-
-    int shoulderPos; //shoulder max position=4200)
-    int targetPos;
-
-    int wristPos = -100-(shoulderPos/28);
 
     public void moveShoulder(int targetPos) {
+
+        int shoulderPos; //shoulder max position=4200)
+        int wristPos;
+
         shoulderPos = targetPos;
         wristPos = (-100 - (shoulderPos/28));
 
         // TODO: Add error/bounds checking
         // if shoulder position is greater than 4200, then it stays at 4200
-        
+
+        if (shoulderPos > SHOULDER_MAX_POS) {
+            shoulderPos = SHOULDER_MAX_POS;
+        }
+
+        if (shoulderPos < SHOULDER_MIN_POS)  {
+            shoulderPos = SHOULDER_MIN_POS;
+        }
+
+        // Even though the WRIST is MAX POS is the value is still negative because of motor direction.
+        if (wristPos < WRIST_MAX_POS) {
+            wristPos = WRIST_MAX_POS;
+        }
+
+        if (wristPos > WRIST_MIN_POS) {
+            wristPos = WRIST_MIN_POS;
+        }
+
+
+
         shoulderMotor.setTargetPosition(shoulderPos);
         wristMotor.setTargetPosition(wristPos);
 
