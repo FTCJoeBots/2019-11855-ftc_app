@@ -54,6 +54,7 @@ public class HardwareJoeBot2019 {
     public DcMotor shoulderMotor = null;
     public DcMotor wristMotor = null;
 
+
     //Declare Servo
 
     public Servo clampServo = null;
@@ -110,6 +111,14 @@ public class HardwareJoeBot2019 {
     static final double LIFT_GEAR_REDUCTION = 1;
     static final double LIFT_COUNTS_PER_MOTOR_REV = 4.0;
     static final double LIFT_COUNTS_PER_INCH = (LIFT_THREADS_PER_INCH * LIFT_GEAR_REDUCTION * LIFT_COUNTS_PER_MOTOR_REV);
+
+
+    static final double FOUNDATION_DOWN = 0.75;
+    static final double FOUNDATION_UP = 0.4;
+
+    static final double CLAMP_OPEN = 0;
+    static final double CLAMP_CLOSE = 1;
+
     /* Constructor */
     public HardwareJoeBot2019() {
 
@@ -246,9 +255,28 @@ public class HardwareJoeBot2019 {
         motor3.setMode(mode);
     }
 
+    public void strafeSeconds(double power, double seconds) {
+
+        //Make the robot strafe for a given number of seconds
+
+        //Reset the clock, so we can count seconds properly
+        runtime.reset();
+
+        // While opModeIsActive and runtime < target seconds, strafe in a direction
+        while (myOpMode.opModeIsActive() && runtime.seconds() < seconds) {
+
+            moveRobot(0, power,0);
+            myOpMode.idle();
+
+        }
+
+        // Timer is finished
+        stop();
+
+    }
     /**
-     * void moveRobot(double forward, double rigclockwise)
-     * ht, double
+     * void moveRobot(double forward, double right, double clockwise)
+     *
      * Calculates power settings for Mecanum drive for JoeBots
      *
      * @param forward
@@ -729,6 +757,31 @@ public class HardwareJoeBot2019 {
 
 
 
+    // grabs the foundation
+    public void grabFoundation() {
+
+        foundationClamp.setPosition(FOUNDATION_DOWN);
+    }
+
+    // releases the foundation
+    public void releaseFoundation () {
+
+        foundationClamp.setPosition(FOUNDATION_UP);
+
+    }
+
+    // opens servo for clamp
+    public void openClamp(){
+
+        clampServo.setPosition(CLAMP_OPEN);
+    }
+
+    // closes servo for clamp
+    public void closeClamp(){
+
+        clampServo.setPosition(CLAMP_CLOSE);
+    }
+    
 
 
 
