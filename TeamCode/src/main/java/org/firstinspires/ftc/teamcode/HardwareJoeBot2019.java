@@ -50,9 +50,11 @@ public class HardwareJoeBot2019 {
     public DcMotor motor1 = null; // Right Front
     public DcMotor motor2 = null; // Left Rear
     public DcMotor motor3 = null; // Right Rear
+
     public DcMotor turretMotor = null;
     public DcMotor shoulderMotor = null;
     public DcMotor wristMotor = null;
+
 
     //Declare Servo
 
@@ -93,6 +95,10 @@ public class HardwareJoeBot2019 {
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    //Servo Consents
+    static final double SERVO_MIN = 0.02;
+    static final double SERVO_MAX = 0.99;
+
 
     // Declare Static members for calculations
     //static final double COUNTS_PER_MOTOR_REV    = 1120;
@@ -109,12 +115,21 @@ public class HardwareJoeBot2019 {
     static final double LIFT_COUNTS_PER_MOTOR_REV = 4.0;
     static final double LIFT_COUNTS_PER_INCH = (LIFT_THREADS_PER_INCH * LIFT_GEAR_REDUCTION * LIFT_COUNTS_PER_MOTOR_REV);
 
+
+
+    static final double FOUNDATION_DOWN = 0.75;
+    static final double FOUNDATION_UP = 0.4;
+
+    static final double CLAMP_OPEN = 0;
+    static final double CLAMP_CLOSE = 1;
+  
     static final int SHOULDER_MIN_POS = 0;
     static final int SHOULDER_MAX_POS = 4200;
 
     static final int WRIST_START_POS = 0;
     static final int WRIST_MIN_POS = -100;
     static final int WRIST_MAX_POS = -250;
+
 
 
     /* Constructor */
@@ -136,6 +151,7 @@ public class HardwareJoeBot2019 {
         motor1 = hwMap.dcMotor.get("motor1");
         motor2 = hwMap.dcMotor.get("motor2");
         motor3 = hwMap.dcMotor.get("motor3");
+
         turretMotor = hwMap.dcMotor.get("turretMotor");
         shoulderMotor = hwMap.dcMotor.get("shoulderMotor");
         wristMotor = hwMap.dcMotor.get("wristMotor");
@@ -155,6 +171,7 @@ public class HardwareJoeBot2019 {
         motor1.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
         motor2.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         motor3.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
+
         turretMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         shoulderMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -166,6 +183,7 @@ public class HardwareJoeBot2019 {
         motor1.setPower(0);
         motor2.setPower(0);
         motor3.setPower(0);
+
         turretMotor.setPower(0);
         shoulderMotor.setPower(0);
         wristMotor.setPower(0);
@@ -183,6 +201,7 @@ public class HardwareJoeBot2019 {
         motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -266,9 +285,28 @@ public class HardwareJoeBot2019 {
         motor3.setMode(mode);
     }
 
+    public void strafeSeconds(double power, double seconds) {
+
+        //Make the robot strafe for a given number of seconds
+
+        //Reset the clock, so we can count seconds properly
+        runtime.reset();
+
+        // While opModeIsActive and runtime < target seconds, strafe in a direction
+        while (myOpMode.opModeIsActive() && runtime.seconds() < seconds) {
+
+            moveRobot(0, power,0);
+            myOpMode.idle();
+
+        }
+
+        // Timer is finished
+        stop();
+
+    }
     /**
-     * void moveRobot(double forward, double rigclockwise)
-     * ht, double
+     * void moveRobot(double forward, double right, double clockwise)
+     *
      * Calculates power settings for Mecanum drive for JoeBots
      *
      * @param forward
@@ -334,6 +372,7 @@ public class HardwareJoeBot2019 {
         motor1.setPower(0);
         motor2.setPower(0);
         motor3.setPower(0);
+
         turretMotor.setPower(0);
         shoulderMotor.setPower(0);
         wristMotor.setPower(0);
@@ -715,6 +754,7 @@ public class HardwareJoeBot2019 {
     // Servo open and close method
 
     public void servoOpen() {
+
         clampServo.setPosition(CLAMP_MAX_POSITION);
 
     }
@@ -724,8 +764,8 @@ public class HardwareJoeBot2019 {
 
     public void servoClose ()
     {
-        clampServo.setPosition(CLAMP_SERVO_MIN);
 
+        clampServo.setPosition(CLAMP_SERVO_MIN);
 
     }
 
@@ -737,10 +777,35 @@ public class HardwareJoeBot2019 {
 
     public void stopTurret() {
 
+
         turretMotor.setPower(0);
 
     }
 
+
+    // grabs the foundation
+    public void grabFoundation() {
+
+        foundationClamp.setPosition(FOUNDATION_DOWN);
+    }
+
+    // releases the foundation
+    public void releaseFoundation () {
+
+        foundationClamp.setPosition(FOUNDATION_UP);
+
+    }
+
+    // opens servo for clamp
+    public void openClamp(){
+
+        clampServo.setPosition(CLAMP_OPEN);
+    }
+
+    // closes servo for clamp
+    public void closeClamp(){
+
+    clampServo.setPosition(CLAMP_CLOSE);
 
 
 
@@ -792,7 +857,6 @@ public class HardwareJoeBot2019 {
 
 
 
-
     public void liftMotorInches(double inches, double power){
 
         // Declare needed variables
@@ -814,6 +878,9 @@ public class HardwareJoeBot2019 {
         }
     }
 }
+
+
+
 
 
 
