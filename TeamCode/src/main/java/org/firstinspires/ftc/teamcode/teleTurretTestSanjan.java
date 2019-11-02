@@ -101,57 +101,53 @@ public class teleTurretTestSanjan extends LinearOpMode {
             */
 
 
-            if (gamepad1.left_bumper)
+            if (gamepad1.left_bumper) {
                 // move turret left
 
-                robot.rotateTurret(-0.2);
-
-            } if (gamepad1.right_bumper) {
+                //robot.rotateTurret(-0.2);
+            }
+            if (gamepad1.right_bumper) {
                 //move turret right
 
-                robot.rotateTurret(0.2);
+                //robot.rotateTurret(0.2);
 
             } else {
                 robot.stopTurret();
             }
 
 
-            if (gamepad1.right_trigger>1) {
+            if (gamepad1.right_trigger > 1) {
                 // open clamp
 
-                robot.servoOpen();
+                robot.openClamp();
 
-            }if (gamepad1.left_trigger==-1) {
+            }
+            if (gamepad1.left_trigger == -1) {
                 // close clamp
 
-                robot.servoClose();
+                robot.closeClamp();
 
+            }
+
+            // Update Telemetry
+            telemetry.addData(">", "Press Stop to end test.");
+
+            if (gamepad1.a) {
+                telemetry.addLine("Button A is pressed");
+            } else if (gamepad1.b) {
+                telemetry.addLine("Button B is pressed");
             } else {
+                telemetry.addLine("Neither button is pressed");
+            }
+
+            telemetry.addData("Turret Motor: ", robot.turretMotor.getCurrentPosition());
+            telemetry.update();
+            idle();
+
+            telemetry.addLine();
 
 
-                //------------------------------------------
-                //-------------------------------------------
-
-
-                // Update Telemetry
-                telemetry.addData(">", "Press Stop to end test.");
-
-                if (gamepad1.a) {
-                    telemetry.addLine("Button A is pressed");
-                } else if (gamepad1.b) {
-                    telemetry.addLine("Button B is pressed");
-                } else {
-                    telemetry.addLine("Neither button is pressed");
-                }
-
-                telemetry.addData("Turret Motor: ", robot.turrentMotor.getCurrentPosition());
-                telemetry.update();
-                idle();
-
-                telemetry.addLine();
-
-
-            }//end while
-        }
+        }//end while
     }
+}
 

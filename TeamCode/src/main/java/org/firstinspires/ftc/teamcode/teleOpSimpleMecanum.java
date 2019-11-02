@@ -47,6 +47,9 @@ public class teleOpSimpleMecanum extends LinearOpMode {
     boolean currStateB;
     boolean prevStateB = false;
 
+    boolean bCurrStateY;
+    boolean bPrevStateY = false;
+
     HardwareJoeBot2019 robot = new HardwareJoeBot2019();
 
     @Override
@@ -109,26 +112,31 @@ public class teleOpSimpleMecanum extends LinearOpMode {
             robot.motor3.setPower(power3);
 
 
+            // Because of the gearing, positive motor power rotates the turret clockwise, but decreases the
+            // encoder counts. So our "right" (clockwise) motion will decrease encoder counts
+
             if (gamepad2.left_bumper) {
                 // move turret left
 
-                robot.rotateTurret(-0.4);
+                robot.rotateTurret(robot.turretMotor.getCurrentPosition() + 20);
 
             }
             if (gamepad2.right_bumper) {
                 //move turret right
 
-                robot.rotateTurret(0.4);
-
-            } else {
-
-                robot.stopTurret();
+                robot.rotateTurret(robot.turretMotor.getCurrentPosition() - 20);
             }
 
             currStateA = gamepad2.a;
             if (currStateA && currStateA != prevStateA) {
 
-                robot.servoOpen();
+                if (robot.grabberState == 1) {
+                    robot.midClamp();
+                } else if (robot.grabberState == 2) {
+                    robot.closeClamp();
+                } else {
+                    robot.midClamp();
+                }
 
             }
             prevStateA = currStateA;
@@ -136,7 +144,8 @@ public class teleOpSimpleMecanum extends LinearOpMode {
             currStateB = gamepad2.b;
             if (currStateB && currStateB != prevStateB ) {
 
-                robot.servoClose();
+                robot.openClamp();
+
             }
             prevStateB = currStateB;
 
@@ -152,6 +161,19 @@ public class teleOpSimpleMecanum extends LinearOpMode {
             } else if (gamepad2.dpad_right) {
 
             }
+
+            bCurrStateY = gamepad2.y;
+            if (bCurrStateY && bCurrStateY != bPrevStateY) {
+
+                if (robot.bFoundationClosed) {
+                    robot.releaseFoundation();
+                } else {
+                    robot.grabFoundation();
+                }
+
+            }
+            bPrevStateY = bCurrStateY;
+
 
             /*
             if (gamepad2.right_trigger > 0) {
@@ -171,6 +193,7 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
             // Update Telemetry
             telemetry.addData(">", "Press Stop to end test.");
+            telemetry.addData("Turret Target:", robot.turretMotor.getTargetPosition());
             telemetry.addData("Turret Motor Position: ", robot.turretMotor.getCurrentPosition());
             telemetry.addData("Wrist Position: ", robot.wristMotor.getCurrentPosition());
             telemetry.addData("Shoulder Position: ", robot.shoulderMotor.getCurrentPosition());

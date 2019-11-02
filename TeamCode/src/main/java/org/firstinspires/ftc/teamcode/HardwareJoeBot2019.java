@@ -23,6 +23,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 import static java.lang.StrictMath.abs;
+import static java.lang.Thread.sleep;
 
 /**
  * This is NOT an opmode. This is a hardware class used to abstract the hardware config for the
@@ -60,6 +61,9 @@ public class HardwareJoeBot2019 {
 
     public Servo clampServo = null;
     public Servo foundationClamp = null;
+
+    public int grabberState = 1; //1=open; 2=mid; 3=close
+    public boolean bFoundationClosed = false;
 
 
 
@@ -117,18 +121,22 @@ public class HardwareJoeBot2019 {
 
 
 
-    static final double FOUNDATION_DOWN = 0.75;
-    static final double FOUNDATION_UP = 0.4;
+    static final double FOUNDATION_DOWN = 1.0;
+    static final double FOUNDATION_UP = 0.2;
 
-    static final double CLAMP_OPEN = 0;
-    static final double CLAMP_CLOSE = 1;
+    static final double GRABBER_CLAMP_OPEN = 0.9;
+    static final double GRABBER_CLAMP_CLOSE = 0.35;
+    static final double GRABBER_CLAMP_MID = 0.6;
   
     static final int SHOULDER_MIN_POS = 0;
     static final int SHOULDER_MAX_POS = 4200;
 
     static final int WRIST_START_POS = 0;
-    static final int WRIST_MIN_POS = -100;
+    static final int WRIST_MIN_POS = -170;
     static final int WRIST_MAX_POS = -250;
+
+    static final int TURRET_MAX = -750;
+    static final int TURRET_MIN = 10;
 
 
 
@@ -161,6 +169,10 @@ public class HardwareJoeBot2019 {
         clampServo = hwMap.servo.get("clampServo");
         clampServo.setPosition(CLAMP_MAX_POSITION);
 
+        foundationClamp = hwMap.servo.get("foundationServo");
+        releaseFoundation();
+
+
 
         //liftBucketMotor = hwMap.dcMotor.get("liftBucketMotor");
         //mainBucketMotor = hwMap.dcMotor.get("mainBucketMotor");
@@ -172,9 +184,9 @@ public class HardwareJoeBot2019 {
         motor2.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         motor3.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
 
-        turretMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         shoulderMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        wristMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
 
@@ -203,7 +215,8 @@ public class HardwareJoeBot2019 {
         motor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         shoulderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -218,6 +231,12 @@ public class HardwareJoeBot2019 {
         shoulderMotor.setPower(.2);
         wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wristMotor.setPower(.2);
+
+        //Set TurrentMotor to start Position
+        turretMotor.setTargetPosition(TURRET_MIN);
+        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turretMotor.setPower(0.3);
+
 
 
 
@@ -267,7 +286,7 @@ public class HardwareJoeBot2019 {
 
         // sleep for the remaining portion of the regular cycle period.
         if (remaining > 0)
-            Thread.sleep(remaining);
+            sleep(remaining);
 
         // Reset the cycle clock for the next pass.
         period.reset();
@@ -372,10 +391,6 @@ public class HardwareJoeBot2019 {
         motor1.setPower(0);
         motor2.setPower(0);
         motor3.setPower(0);
-
-        turretMotor.setPower(0);
-        shoulderMotor.setPower(0);
-        wristMotor.setPower(0);
 
         myOpMode.telemetry.addLine("initialized motor power to zero");
         myOpMode.telemetry.update();
@@ -753,30 +768,26 @@ public class HardwareJoeBot2019 {
 
     // Servo open and close method
 
-    public void servoOpen() {
 
-        clampServo.setPosition(CLAMP_MAX_POSITION);
+    public void rotateTurret(int targetPos) {
+        // move turret to target position
 
-    }
+        if (targetPos < TURRET_MAX) {
+            targetPos = TURRET_MAX;
+        }
+
+        if (targetPos > TURRET_MIN) {
+            targetPos = TURRET_MIN;
+        }
 
 
-
-
-    public void servoClose ()
-    {
-
-        clampServo.setPosition(CLAMP_SERVO_MIN);
-
-    }
-
-    public void rotateTurret(double turretPower) {
-
-        turretMotor.setPower(turretPower);
+        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turretMotor.setTargetPosition(targetPos);
+        turretMotor.setPower(0.2);
 
     }
 
     public void stopTurret() {
-
 
         turretMotor.setPower(0);
 
@@ -787,25 +798,37 @@ public class HardwareJoeBot2019 {
     public void grabFoundation() {
 
         foundationClamp.setPosition(FOUNDATION_DOWN);
+        bFoundationClosed = true;
+
     }
 
     // releases the foundation
     public void releaseFoundation () {
 
         foundationClamp.setPosition(FOUNDATION_UP);
+        bFoundationClosed = false;
 
     }
 
     // opens servo for clamp
     public void openClamp(){
 
-        clampServo.setPosition(CLAMP_OPEN);
+        clampServo.setPosition(GRABBER_CLAMP_OPEN);
+        grabberState = 1;
+
     }
 
     // closes servo for clamp
     public void closeClamp() {
+        clampServo.setPosition(GRABBER_CLAMP_CLOSE);
+        grabberState = 3;
 
-        clampServo.setPosition(CLAMP_CLOSE);
+    }
+
+    public void midClamp() {
+        clampServo.setPosition(GRABBER_CLAMP_MID);
+        grabberState = 2;
+
     }
 
 

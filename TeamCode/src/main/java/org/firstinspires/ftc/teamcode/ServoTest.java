@@ -30,6 +30,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class ServoTest extends LinearOpMode {
 
     double foundationServoPos = 0.3;
+    double clampServoPos = 0.5;
 
     HardwareJoeBot2019 robot = new HardwareJoeBot2019();
 
@@ -37,28 +38,41 @@ public class ServoTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         robot.init(hardwareMap, this);
-
         telemetry.addLine("initialized");
 
         waitForStart();
 
+        robot.clampServo.setPosition(clampServoPos);
+        robot.foundationClamp.setPosition(foundationServoPos);
+
+
         //start of loop
         while (opModeIsActive()) {
 
-            if(gamepad1.dpad_right == true){
+
+
+            if(gamepad1.dpad_right){
                 foundationServoPos += 0.05;
-                robot.foundationClamp.setPosition(foundationServoPos);
-                gamepad1.dpad_up=false;
-                sleep(1000);
-
+                sleep(500);
             }
 
-            if(gamepad1.dpad_left == true){
+            if(gamepad1.dpad_left){
                 foundationServoPos -= 0.05;
-                robot.foundationClamp.setPosition(foundationServoPos);
-                sleep(1000);
+                sleep(500);
             }
 
+            if(gamepad1.dpad_down) {
+                clampServoPos -= 0.05;
+                sleep(500);
+            }
+
+            if(gamepad1.dpad_up) {
+                clampServoPos += 0.05;
+                sleep(500);
+            }
+
+            robot.clampServo.setPosition(clampServoPos);
+            robot.foundationClamp.setPosition(foundationServoPos);
 
 
             //------------------------------------------
@@ -67,27 +81,11 @@ public class ServoTest extends LinearOpMode {
 
 
             // Update Telemetry
-            telemetry.addData(">", "Press Stop to end test.");
-
-            if (gamepad1.a) {
-                telemetry.addLine("Button A is pressed on pad 1");
-            } else if (gamepad1.b) {
-                telemetry.addLine("Button B is pressed on pad 1");
-            } else {
-                telemetry.addLine("Neither button is pressed on pad 1");
-            }
-
-            if (gamepad2.a) {
-                telemetry.addLine("Button A is pressed on pad 2");
-            } else if (gamepad2.b) {
-                telemetry.addLine("Button B is pressed on pad 2");
-            } else {
-                telemetry.addLine("Neither button is pressed on pad 2");
-            }
+            telemetry.addData(">", "DPAD L/R: Foundation Servo");
+            telemetry.addData(">", "DPAD U/D: Wrist Servo");
 
             telemetry.addData("foundation clamp", foundationServoPos);
-
-            telemetry.update();
+            telemetry.addData("Grabber Clamp: ", clampServoPos);
 
             telemetry.update();
             idle();
