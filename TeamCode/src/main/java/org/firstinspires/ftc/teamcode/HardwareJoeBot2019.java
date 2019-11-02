@@ -750,13 +750,6 @@ public class HardwareJoeBot2019 {
     }
 
 
-
-
-
-
-
-
-
     // grabs the foundation
     public void grabFoundation() {
 
@@ -781,7 +774,7 @@ public class HardwareJoeBot2019 {
 
         clampServo.setPosition(CLAMP_CLOSE);
     }
-    
+
 
 
 
