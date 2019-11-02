@@ -41,7 +41,13 @@ public class teleOpSimpleMecanum extends LinearOpMode {
     double liftpower;
     double max;
 
-    HardwareJoeBot2018 robot = new HardwareJoeBot2018();
+    boolean currStateA;
+    boolean prevStateA = false;
+
+    boolean currStateB;
+    boolean prevStateB = false;
+
+    HardwareJoeBot2019 robot = new HardwareJoeBot2019();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -103,33 +109,82 @@ public class teleOpSimpleMecanum extends LinearOpMode {
             robot.motor3.setPower(power3);
 
 
+            if (gamepad2.left_bumper) {
+                // move turret left
 
+                robot.rotateTurret(-0.4);
 
+            }
+            if (gamepad2.right_bumper) {
+                //move turret right
 
-            //------------------------------------------
-            //-------------------------------------------
+                robot.rotateTurret(0.4);
 
+            } else {
 
+                robot.stopTurret();
+            }
+
+            currStateA = gamepad2.a;
+            if (currStateA && currStateA != prevStateA) {
+
+                robot.servoOpen();
+
+            }
+            prevStateA = currStateA;
+
+            currStateB = gamepad2.b;
+            if (currStateB && currStateB != prevStateB ) {
+
+                robot.servoClose();
+            }
+            prevStateB = currStateB;
+
+            // Manually move wrist and shoulder based on dpad
+            if (gamepad2.dpad_up) {
+                robot.moveShoulder(robot.shoulderMotor.getCurrentPosition() + 100);
+            } else if (gamepad2.dpad_down) {
+                robot.moveShoulder(robot.shoulderMotor.getCurrentPosition() - 100);
+            }
+
+            if (gamepad2.dpad_left) {
+
+            } else if (gamepad2.dpad_right) {
+
+            }
+
+            /*
+            if (gamepad2.right_trigger > 0) {
+                // open clamp
+
+                robot.servoOpen();
+
+            }
+
+            if (gamepad2.left_trigger == -1) {
+                // close clamp
+
+                robot.servoClose();
+
+            }
+            */
 
             // Update Telemetry
             telemetry.addData(">", "Press Stop to end test.");
+            telemetry.addData("Turret Motor Position: ", robot.turretMotor.getCurrentPosition());
+            telemetry.addData("Wrist Position: ", robot.wristMotor.getCurrentPosition());
+            telemetry.addData("Shoulder Position: ", robot.shoulderMotor.getCurrentPosition());
 
-            if (gamepad1.a) {
-                telemetry.addLine("Button A is pressed");
-            } else if (gamepad1.b) {
-                telemetry.addLine("Button B is pressed");
-            } else {
-                telemetry.addLine("Neither button is pressed");
-            }
 
             telemetry.update();
             idle();
 
-            telemetry.addLine();
+
+
+        }
 
 
 
 
-        }//end while
     }
 }
