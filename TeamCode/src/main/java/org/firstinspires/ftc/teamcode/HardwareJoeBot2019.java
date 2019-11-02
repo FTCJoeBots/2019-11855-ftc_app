@@ -803,10 +803,10 @@ public class HardwareJoeBot2019 {
     }
 
     // closes servo for clamp
-    public void closeClamp(){
+    public void closeClamp() {
 
-    clampServo.setPosition(CLAMP_CLOSE);
-
+        clampServo.setPosition(CLAMP_CLOSE);
+    }
 
 
     public void moveShoulder(int targetPos) {
