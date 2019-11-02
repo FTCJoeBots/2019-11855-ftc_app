@@ -50,7 +50,8 @@ public class HardwareJoeBot2019 {
     public DcMotor motor1 = null; // Right Front
     public DcMotor motor2 = null; // Left Rear
     public DcMotor motor3 = null; // Right Rear
-    public DcMotor turrentMotor = null;
+
+    public DcMotor turretMotor = null;
     public DcMotor shoulderMotor = null;
     public DcMotor wristMotor = null;
 
@@ -101,6 +102,8 @@ public class HardwareJoeBot2019 {
 
     // Declare Static members for calculations
     //static final double COUNTS_PER_MOTOR_REV    = 1120;
+    static final double CLAMP_MAX_POSITION = 0.99;
+    static final double CLAMP_SERVO_MIN = 0.02;
     static final double COUNTS_PER_MOTOR_REV = 780;
 
     static final double DRIVE_GEAR_REDUCTION = 1;
@@ -113,11 +116,21 @@ public class HardwareJoeBot2019 {
     static final double LIFT_COUNTS_PER_INCH = (LIFT_THREADS_PER_INCH * LIFT_GEAR_REDUCTION * LIFT_COUNTS_PER_MOTOR_REV);
 
 
+
     static final double FOUNDATION_DOWN = 0.75;
     static final double FOUNDATION_UP = 0.4;
 
     static final double CLAMP_OPEN = 0;
     static final double CLAMP_CLOSE = 1;
+  
+    static final int SHOULDER_MIN_POS = 0;
+    static final int SHOULDER_MAX_POS = 4200;
+
+    static final int WRIST_START_POS = 0;
+    static final int WRIST_MIN_POS = -100;
+    static final int WRIST_MAX_POS = -250;
+
+
 
     /* Constructor */
     public HardwareJoeBot2019() {
@@ -138,14 +151,15 @@ public class HardwareJoeBot2019 {
         motor1 = hwMap.dcMotor.get("motor1");
         motor2 = hwMap.dcMotor.get("motor2");
         motor3 = hwMap.dcMotor.get("motor3");
-        turrentMotor = hwMap.dcMotor.get("turretMotor");
+
+        turretMotor = hwMap.dcMotor.get("turretMotor");
         shoulderMotor = hwMap.dcMotor.get("shoulderMotor");
         wristMotor = hwMap.dcMotor.get("wristMotor");
 
 
         // Define and Initialize Servos
         clampServo = hwMap.servo.get("clampServo");
-        clampServo.setPosition(clampServo.MIN_POSITION);
+        clampServo.setPosition(CLAMP_MAX_POSITION);
 
 
         //liftBucketMotor = hwMap.dcMotor.get("liftBucketMotor");
@@ -157,7 +171,8 @@ public class HardwareJoeBot2019 {
         motor1.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
         motor2.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         motor3.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
-        turrentMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        turretMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         shoulderMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -168,7 +183,8 @@ public class HardwareJoeBot2019 {
         motor1.setPower(0);
         motor2.setPower(0);
         motor3.setPower(0);
-        turrentMotor.setPower(0);
+
+        turretMotor.setPower(0);
         shoulderMotor.setPower(0);
         wristMotor.setPower(0);
 
@@ -185,9 +201,23 @@ public class HardwareJoeBot2019 {
         motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        turrentMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shoulderMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        wristMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        shoulderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        shoulderMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        //set shoulderMotor to RUN_TO_POSITION mode
+        moveShoulder(SHOULDER_MIN_POS);
+        shoulderMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        shoulderMotor.setPower(.2);
+        wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wristMotor.setPower(.2);
 
 
 
@@ -342,7 +372,8 @@ public class HardwareJoeBot2019 {
         motor1.setPower(0);
         motor2.setPower(0);
         motor3.setPower(0);
-        turrentMotor.setPower(0);
+
+        turretMotor.setPower(0);
         shoulderMotor.setPower(0);
         wristMotor.setPower(0);
 
@@ -723,7 +754,8 @@ public class HardwareJoeBot2019 {
     // Servo open and close method
 
     public void servoOpen() {
-        clampServo.setPosition(Servo.MAX_POSITION);
+
+        clampServo.setPosition(CLAMP_MAX_POSITION);
 
     }
 
@@ -732,20 +764,21 @@ public class HardwareJoeBot2019 {
 
     public void servoClose ()
     {
-        clampServo.setPosition(Servo.MIN_POSITION);
 
+        clampServo.setPosition(CLAMP_SERVO_MIN);
 
     }
 
     public void rotateTurret(double turretPower) {
 
-        turrentMotor.setPower(turretPower);
+        turretMotor.setPower(turretPower);
 
     }
 
     public void stopTurret() {
 
-        turrentMotor.setPower(0);
+
+        turretMotor.setPower(0);
 
     }
 
@@ -772,7 +805,43 @@ public class HardwareJoeBot2019 {
     // closes servo for clamp
     public void closeClamp(){
 
-        clampServo.setPosition(CLAMP_CLOSE);
+    clampServo.setPosition(CLAMP_CLOSE);
+
+
+
+    public void moveShoulder(int targetPos) {
+
+        int shoulderPos; //shoulder max position=4200)
+        int wristPos;
+
+        shoulderPos = targetPos;
+        wristPos = (-100 - (shoulderPos/28));
+
+        // TODO: Add error/bounds checking
+        // if shoulder position is greater than 4200, then it stays at 4200
+
+        if (shoulderPos > SHOULDER_MAX_POS) {
+            shoulderPos = SHOULDER_MAX_POS;
+        }
+
+        if (shoulderPos < SHOULDER_MIN_POS)  {
+            shoulderPos = SHOULDER_MIN_POS;
+        }
+
+        // Even though the WRIST is MAX POS is the value is still negative because of motor direction.
+        if (wristPos < WRIST_MAX_POS) {
+            wristPos = WRIST_MAX_POS;
+        }
+
+        if (wristPos > WRIST_MIN_POS) {
+            wristPos = WRIST_MIN_POS;
+        }
+
+
+
+        shoulderMotor.setTargetPosition(shoulderPos);
+        wristMotor.setTargetPosition(wristPos);
+
     }
 
 
