@@ -133,7 +133,7 @@ public class HardwareJoeBot2019 {
 
     static final int WRIST_START_POS = 0;
     static final int WRIST_MIN_POS = -170;
-    static final int WRIST_MAX_POS = -250;
+    static final int WRIST_MAX_POS = -300;
 
     static final int TURRET_MAX = -750;
     static final int TURRET_MIN = 10;
@@ -226,11 +226,14 @@ public class HardwareJoeBot2019 {
 
 
         //set shoulderMotor to RUN_TO_POSITION mode
-        moveShoulder(SHOULDER_MIN_POS);
+        shoulderMotor.setTargetPosition(0);
         shoulderMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         shoulderMotor.setPower(.2);
+        wristMotor.setTargetPosition(WRIST_MIN_POS);
         wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wristMotor.setPower(.2);
+        moveShoulder(SHOULDER_MIN_POS);
+
 
         //Set TurrentMotor to start Position
         turretMotor.setTargetPosition(TURRET_MIN);
@@ -838,7 +841,7 @@ public class HardwareJoeBot2019 {
         int wristPos;
 
         shoulderPos = targetPos;
-        wristPos = (-100 - (shoulderPos/28));
+        wristPos = (-170 - (shoulderPos/32));
 
         // TODO: Add error/bounds checking
         // if shoulder position is greater than 4200, then it stays at 4200
