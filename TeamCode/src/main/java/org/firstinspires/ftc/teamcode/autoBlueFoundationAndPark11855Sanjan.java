@@ -63,7 +63,7 @@ public class autoBlueFoundationAndPark11855Sanjan extends LinearOpMode {
         robot.moveRobot(0, -13, 0);
         telemetry.update();
 
-        //grab foundation
+        //grab foundation code goes here
 
       /*  public void grabFoundation() {
 
@@ -91,16 +91,16 @@ public class autoBlueFoundationAndPark11855Sanjan extends LinearOpMode {
     } */
         // Strafe foundation to build site
         telemetry.addLine("Starts strafing to build site");
-        robot.moveRobot(-10, 0, 0);
+        robot.moveRobot(0, 13, 0);
         telemetry.update();
 
         sleep(1000);
         telemetry.addLine("Ends strafing");
         telemetry.update();
 
-        //release the clamp that holds foundation
+        //grab clamp
 
-        telemetry.addLine("Release Clamp");
+        telemetry.addLine("Close Clamp");
 
 
         //move forward to alliance bridge
