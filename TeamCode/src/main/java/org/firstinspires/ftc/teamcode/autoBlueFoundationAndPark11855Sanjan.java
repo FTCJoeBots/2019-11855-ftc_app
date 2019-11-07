@@ -59,9 +59,7 @@ public class autoBlueFoundationAndPark11855Sanjan extends LinearOpMode {
 
         //Strafe to foundation
 
-        telemetry.addLine("Starts strafing to foundation");
-        robot.moveRobot(0, -13, 0);
-        telemetry.update();
+
 
         //grab foundation code goes here
 
@@ -90,23 +88,34 @@ public class autoBlueFoundationAndPark11855Sanjan extends LinearOpMode {
         }
     } */
         // Strafe foundation to build site
-        telemetry.addLine("Starts strafing to build site");
-        robot.moveRobot(0, 13, 0);
+        telemetry.addLine("Starts strafing to foundation");
+        robot.moveRobot(0, -.5, 0);
         telemetry.update();
 
-        sleep(1000);
+        sleep(5000);
         telemetry.addLine("Ends strafing");
         telemetry.update();
 
         //grab clamp
-
+        robot.grabFoundation();
+        sleep(10000);
         telemetry.addLine("Close Clamp");
 
+        telemetry.addLine("Starts strafing to foundation");
+        robot.moveRobot(0, .4, 0);
+        telemetry.update();
+
+        sleep(5000);
+        telemetry.addLine("Ends strafing");
+        telemetry.update();
+
+
+        robot.releaseFoundation();
+        telemetry.addLine("Open Clamp");
 
         //move forward to alliance bridge
-
-        robot.moveInches(21, .5, 10);
-        sleep(1000);
+        robot.moveInches(55, .5, 0);
+        sleep(100);
 
 
         telemetry.addLine("We're done. Press stop.");

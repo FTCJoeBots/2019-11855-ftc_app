@@ -135,7 +135,7 @@ public class HardwareJoeBot2019 {
     static final int WRIST_MIN_POS = -170;
     static final int WRIST_MAX_POS = -300;
 
-    static final int TURRET_MAX = -750;
+    static final int TURRET_MAX = -4050;
     static final int TURRET_MIN = 10;
 
 
@@ -238,7 +238,7 @@ public class HardwareJoeBot2019 {
         //Set TurrentMotor to start Position
         turretMotor.setTargetPosition(TURRET_MIN);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(0.3);
+        turretMotor.setPower(0.99);
 
 
 
@@ -783,10 +783,10 @@ public class HardwareJoeBot2019 {
             targetPos = TURRET_MIN;
         }
 
-
+        turretMotor.setPower(1);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         turretMotor.setTargetPosition(targetPos);
-        turretMotor.setPower(0.2);
+
 
     }
 
