@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
-// auto
+// auto things
 @Autonomous(name="Auto Move Foundation Blue", group="Pushbot")
 //@Disabled
 public class autoBlueMoveFoundation_2 extends LinearOpMode {
