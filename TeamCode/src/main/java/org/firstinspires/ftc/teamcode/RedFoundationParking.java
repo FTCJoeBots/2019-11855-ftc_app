@@ -38,6 +38,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 // Auto things
+//
+
 
 @Autonomous(name="Red Foundation", group="Pushbot")
 //@Disabled
