@@ -34,16 +34,17 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * This code gets foundation to BLUE build site and parks under bridge near the wall
+ * This is sample code used to explain how to write an autonomous code
  *
  */
 
-@Autonomous(name="Auto Move Foundation Blue", group="Pushbot")
+@Autonomous(name="Blue Foundation", group="Pushbot")
 //@Disabled
-public class autoBlueMoveFoundation_2 extends LinearOpMode {
+public class blueFoundationParking extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareJoeBot2019 robot   = new HardwareJoeBot2019();   // Use a Pushbot's hardware
+    HardwareJoeBot2019      robot   = new HardwareJoeBot2019();   // Use a Pushbot's hardware
+    Image_Recognition    V = new Image_Recognition();
     private ElapsedTime     runtime = new ElapsedTime();
 
 
@@ -53,64 +54,31 @@ public class autoBlueMoveFoundation_2 extends LinearOpMode {
         telemetry.addLine("Press > to Start");
         telemetry.update();
 
-        robot.init(hardwareMap,this);
-
+        robot.init1(hardwareMap,this);
         waitForStart();
 
-
-
-
-
-        // Strafe forward to blue foundation
-
-        robot.strafeSeconds( 2000, -0.5);
-
-
-
-        // grab foundation goes down
+        //move to foundation
+        robot.moveInches(32,0.25, 10);
+        sleep(1000);
+        robot.strafeSeconds(640,-0.7);
+        //grab foundation
         robot.grabFoundation();
 
-
-        // Strafe back to building site
-
-        robot.strafeSeconds(2000, 0.5);
-
-
-        // Grab foundation goes up
-
-        robot.foundationClamp.setPosition(0);
-
-
-
-
-
-        /*rotate foundation to blue site
-        telemetry.addLine("Starts rotating");
-        robot.rotate(-80,.5);
-        telemetry.update();throbot .move inches
-
         sleep(1000);
-        telemetry.addLine("Ends rotating");
-        telemetry.update();
+        //drive into building site
+        robot.moveInches(-80, 0.25,15);
+        robot.strafeSeconds(500, 0.5);
+        robot.moveInches(-20, 0.25, 10);
 
-        //strafe to right and park under bridge
-        telemetry.addLine("Starts strafing");
-        robot.moveRobot(0,13,0);
-        telemetry.update();
-
-
+        //release grabber
+        robot.releaseFoundation();
         sleep(1000);
-        telemetry.addLine("Ends strafing");
-        telemetry.update();
 
+        //back up under skybridge
+        robot.moveInches(44,0.25,10);
 
         telemetry.addLine("We're done. Press stop.");
         telemetry.update();
-
-
-
-         */
-
 
     }
 

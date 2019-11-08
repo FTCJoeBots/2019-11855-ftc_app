@@ -28,7 +28,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name="Servo TeleOp Test2", group="TeleOp")
 
 public class ServoTest2 extends LinearOpMode {
-
+    // Servo goes from 0.5 to 1
     double clampServoPos = 0.5;
 
     HardwareJoeBot2019 robot = new HardwareJoeBot2019();
