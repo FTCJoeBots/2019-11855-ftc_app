@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * This is sample code used to explain how to write an autonomous code
  *
  */
+// Auto 
 
 @Autonomous(name="Red Foundation", group="Pushbot")
 //@Disabled
