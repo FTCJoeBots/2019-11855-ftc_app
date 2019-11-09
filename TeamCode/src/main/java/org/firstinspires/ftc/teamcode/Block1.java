@@ -30,7 +30,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -38,13 +40,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
-@Autonomous(name="Red Foundation", group="Pushbot")
+@Autonomous(name="Block 1", group="Pushbot")
 //@Disabled
-public class RedFoundationParking extends LinearOpMode {
+public class Block1 extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareJoeBot2019      robot   = new HardwareJoeBot2019();   // Use a Pushbot's hardware
-    Image_Recognition    V = new Image_Recognition();
     private ElapsedTime     runtime = new ElapsedTime();
 
 
@@ -55,30 +56,35 @@ public class RedFoundationParking extends LinearOpMode {
         telemetry.update();
 
         robot.init1(hardwareMap,this);
+
         waitForStart();
 
-        //move to foundation
-        robot.moveInches(-32,0.25, 10);
-        sleep(1000);
-        robot.strafeSeconds(640,-0.7);
-        //grab foundation
-        robot.grabFoundation();
+        robot.strafeSeconds( 500, 0.25);
 
-        sleep(1000);
-        //drive into building site
-        robot.moveInches(80, 0.25,15);
-        robot.strafeSeconds(500, 0.5);
-        robot.moveInches(20, 0.25, 10);
 
-        //release grabber
-        robot.releaseFoundation();
+        robot.moveInches(30, 0.5, 5);
         sleep(1000);
 
-        //back up under skybridge
-        robot.moveInches(-44,0.25,10);
+        robot.closeClamp();
+        sleep(1000);
+
+        robot.moveInches(-15,0.5,10);
+
+
+        robot.strafeSeconds( 4500, -0.5);
+
+        robot.openClamp();
+
+
+        robot.strafeSeconds(2200,-.5 );
+
+        robot.rotateDegrees(90,0.5);
+
 
         telemetry.addLine("We're done. Press stop.");
         telemetry.update();
+
+
 
     }
 

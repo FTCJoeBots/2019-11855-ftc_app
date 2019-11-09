@@ -616,6 +616,63 @@ public class HardwareJoeBot2019 {
 
     }
 
+
+    public void rotateSeconds(double SecondsToTurn, double power) {
+
+        double currentHeading = getAngle ();
+
+        double targetHeading = currentHeading + SecondsToTurn;
+
+        double error = targetHeading - currentHeading;
+
+        double closeEnough = 0.5;
+
+        double targetPower = 0;
+
+        double maxPower = power;
+
+        double minPower = .1;
+
+
+        while(myOpMode.opModeIsActive() && abs(error)>closeEnough) {
+
+            if (abs(error) > 50) {
+                targetPower = maxPower;
+            } else if (abs(error) < 10) {
+                targetPower = minPower;
+            } else {
+                targetPower = (maxPower - minPower) / 2;
+            }
+            if (error < 0) {
+                targetPower = -targetPower;
+            }
+
+            moveRobot(0,0,targetPower);
+
+            currentHeading = getAngle();
+            error = targetHeading-currentHeading;
+
+            myOpMode.telemetry.addData("targetHeading: ", targetHeading);
+            myOpMode.telemetry.addData("currentHeading: ", currentHeading);
+            myOpMode.telemetry.addData("targetPower: ", targetPower);
+            myOpMode.telemetry.update();
+
+        }
+
+        myOpMode.telemetry.addData("targetHeading: ", targetHeading);
+        myOpMode.telemetry.addData("currentHeading: ", currentHeading);
+        myOpMode.telemetry.addData("targetPower: ", targetPower);
+        myOpMode.telemetry.update();
+
+    }
+
+
+
+
+
+
+
+
     public void rotateDegrees(double degreesToTurn, double power) {
 
         double currentHeading = getAngle();
@@ -628,7 +685,7 @@ public class HardwareJoeBot2019 {
 
         double targetPower = 0;
 
-        double maxPower = power;
+        double maxPower = 1;
 
         double minPower = .1;
 

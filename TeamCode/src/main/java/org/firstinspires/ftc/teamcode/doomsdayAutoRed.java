@@ -30,9 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -40,9 +38,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
-@Autonomous(name="Sample 2", group="Pushbot")
+@Autonomous(name="doomsday red 1", group="Pushbot")
 //@Disabled
-public class autoDriveSample extends LinearOpMode {
+public class doomsdayAutoRed extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareJoeBot2019      robot   = new HardwareJoeBot2019();   // Use a Pushbot's hardware
@@ -55,13 +53,12 @@ public class autoDriveSample extends LinearOpMode {
         telemetry.addLine("Press > to Start");
         telemetry.update();
 
-        robot.init(hardwareMap,this);
+        robot.init1(hardwareMap,this);
 
         waitForStart();
 
-        //Move forward 12 inches
+        robot.strafeSeconds(1000,0.25);
 
-        robot.moveInches(12, 0.5, 5);
 
         telemetry.addLine("We're done. Press stop.");
         telemetry.update();
