@@ -34,17 +34,18 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * This code gets foundation to BLUE build site and parks under bridge near the wall
+ * This is sample code used to explain how to write an autonomous code
  *
  */
 
-@Autonomous(name="11855 Auto Move Foundation Blue", group="Pushbot")
+@Autonomous(name="Red Foundation", group="Pushbot")
 //@Disabled
-public class autoBlueFoundationAndPark11855Sanjan extends LinearOpMode {
+public class RedFoundationParking extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareJoeBot2019 robot = new HardwareJoeBot2019();   // Use a Pushbot's hardware
-    private ElapsedTime runtime = new ElapsedTime();
+    HardwareJoeBot2019      robot   = new HardwareJoeBot2019();   // Use a Pushbot's hardware
+    Image_Recognition    V = new Image_Recognition();
+    private ElapsedTime     runtime = new ElapsedTime();
 
 
     @Override
@@ -53,61 +54,28 @@ public class autoBlueFoundationAndPark11855Sanjan extends LinearOpMode {
         telemetry.addLine("Press > to Start");
         telemetry.update();
 
-        robot.init(hardwareMap, this);
-
+        robot.init1(hardwareMap,this);
         waitForStart();
 
-        //Strafe to foundation
-
-        telemetry.addLine("Starts strafing to foundation");
-        robot.moveRobot(0, -13, 0);
-        telemetry.update();
-
-        //grab foundation code goes here
-
-      /*  public void grabFoundation() {
-
-            foundationServo.setPosition(FOUNDATION_DOWN);
-        }
-
-        // releases the foundation
-        public void releaseFoundation () {
-
-            foundationServo.setPosition(FOUNDATION_UP);
-
-        }
-
-        // opens servo for clamp
-        public void openClamp(){
-
-            clampServo.setPosition(CLAMP_OPEN);
-        }
-
-        // closes servo for clamp
-        public void closeClamp(){
-
-            clampServo.setPosition(CLAMP_CLOSE);
-        }
-    } */
-        // Strafe foundation to build site
-        telemetry.addLine("Starts strafing to build site");
-        robot.moveRobot(0, 13, 0);
-        telemetry.update();
+        //move to foundation
+        robot.moveInches(-32,0.25, 10);
+        sleep(1000);
+        robot.strafeSeconds(640,-0.7);
+        //grab foundation
+        robot.grabFoundation();
 
         sleep(1000);
-        telemetry.addLine("Ends strafing");
-        telemetry.update();
+        //drive into building site
+        robot.moveInches(80, 0.25,15);
+        robot.strafeSeconds(500, 0.5);
+        robot.moveInches(20, 0.25, 10);
 
-        //grab clamp
-
-        telemetry.addLine("Close Clamp");
-
-
-        //move forward to alliance bridge
-
-        robot.moveInches(21, .5, 10);
+        //release grabber
+        robot.releaseFoundation();
         sleep(1000);
 
+        //back up under skybridge
+        robot.moveInches(-44,0.25,10);
 
         telemetry.addLine("We're done. Press stop.");
         telemetry.update();

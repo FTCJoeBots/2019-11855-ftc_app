@@ -125,8 +125,8 @@ public class HardwareJoeBot2019 {
     static final double FOUNDATION_UP = 0.2;
 
     static final double GRABBER_CLAMP_OPEN = 0.9;
-    static final double GRABBER_CLAMP_CLOSE = 0.35;
-    static final double GRABBER_CLAMP_MID = 0.6;
+    static final double GRABBER_CLAMP_CLOSE = 0.45;
+    static final double GRABBER_CLAMP_MID = 0.7;
   
     static final int SHOULDER_MIN_POS = 0;
     static final int SHOULDER_MAX_POS = 4200;
@@ -135,7 +135,7 @@ public class HardwareJoeBot2019 {
     static final int WRIST_MIN_POS = -170;
     static final int WRIST_MAX_POS = -300;
 
-    static final int TURRET_MAX = -750;
+    static final int TURRET_MAX = -4050;
     static final int TURRET_MIN = 10;
 
 
@@ -207,6 +207,21 @@ public class HardwareJoeBot2019 {
         myOpMode.telemetry.update();
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Set all drive motors to run without encoders.
         // May want to switch to  RUN_USING_ENCODERS during autonomous
         motor0.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -238,7 +253,7 @@ public class HardwareJoeBot2019 {
         //Set TurrentMotor to start Position
         turretMotor.setTargetPosition(TURRET_MIN);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(0.3);
+        turretMotor.setPower(0.99);
 
 
 
@@ -307,25 +322,16 @@ public class HardwareJoeBot2019 {
         motor3.setMode(mode);
     }
 
-    public void strafeSeconds(double power, double seconds) {
+    public void strafeSeconds(long milliseconds, double power) {
 
         //Make the robot strafe for a given number of seconds
 
-        //Reset the clock, so we can count seconds properly
-        runtime.reset();
-
-        // While opModeIsActive and runtime < target seconds, strafe in a direction
-        while (myOpMode.opModeIsActive() && runtime.seconds() < seconds) {
-
             moveRobot(0, power,0);
-            myOpMode.idle();
+            myOpMode.sleep(milliseconds);
+            stop();
 
         }
 
-        // Timer is finished
-        stop();
-
-    }
     /**
      * void moveRobot(double forward, double right, double clockwise)
      *
@@ -610,6 +616,63 @@ public class HardwareJoeBot2019 {
 
     }
 
+
+    public void rotateSeconds(double SecondsToTurn, double power) {
+
+        double currentHeading = getAngle ();
+
+        double targetHeading = currentHeading + SecondsToTurn;
+
+        double error = targetHeading - currentHeading;
+
+        double closeEnough = 0.5;
+
+        double targetPower = 0;
+
+        double maxPower = power;
+
+        double minPower = .1;
+
+
+        while(myOpMode.opModeIsActive() && abs(error)>closeEnough) {
+
+            if (abs(error) > 50) {
+                targetPower = maxPower;
+            } else if (abs(error) < 10) {
+                targetPower = minPower;
+            } else {
+                targetPower = (maxPower - minPower) / 2;
+            }
+            if (error < 0) {
+                targetPower = -targetPower;
+            }
+
+            moveRobot(0,0,targetPower);
+
+            currentHeading = getAngle();
+            error = targetHeading-currentHeading;
+
+            myOpMode.telemetry.addData("targetHeading: ", targetHeading);
+            myOpMode.telemetry.addData("currentHeading: ", currentHeading);
+            myOpMode.telemetry.addData("targetPower: ", targetPower);
+            myOpMode.telemetry.update();
+
+        }
+
+        myOpMode.telemetry.addData("targetHeading: ", targetHeading);
+        myOpMode.telemetry.addData("currentHeading: ", currentHeading);
+        myOpMode.telemetry.addData("targetPower: ", targetPower);
+        myOpMode.telemetry.update();
+
+    }
+
+
+
+
+
+
+
+
     public void rotateDegrees(double degreesToTurn, double power) {
 
         double currentHeading = getAngle();
@@ -622,7 +685,7 @@ public class HardwareJoeBot2019 {
 
         double targetPower = 0;
 
-        double maxPower = power;
+        double maxPower = 1;
 
         double minPower = .1;
 
@@ -783,10 +846,10 @@ public class HardwareJoeBot2019 {
             targetPos = TURRET_MIN;
         }
 
-
+        turretMotor.setPower(1);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         turretMotor.setTargetPosition(targetPos);
-        turretMotor.setPower(0.2);
+
 
     }
 
@@ -903,7 +966,73 @@ public class HardwareJoeBot2019 {
             setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
+
+    /* Initialize standard Hardware interfaces */
+    public void init1(HardwareMap ahwMap, LinearOpMode opMode) {
+        // Save reference to Hardware map
+        hwMap = ahwMap;
+
+        myOpMode = opMode;
+
+        // Define and Initialize Motors
+        motor0 = hwMap.dcMotor.get("motor0");
+        motor1 = hwMap.dcMotor.get("motor1");
+        motor2 = hwMap.dcMotor.get("motor2");
+        motor3 = hwMap.dcMotor.get("motor3");
+
+        turretMotor = hwMap.dcMotor.get("turretMotor");
+        shoulderMotor = hwMap.dcMotor.get("shoulderMotor");
+        wristMotor = hwMap.dcMotor.get("wristMotor");
+
+
+        // Define and Initialize Servos
+        //clampServo = hwMap.servo.get("clampServo");
+        //clampServo.setPosition(CLAMP_MAX_POSITION);
+
+        foundationClamp = hwMap.servo.get("foundationServo");
+        releaseFoundation();
+
+
+
+        //liftBucketMotor = hwMap.dcMotor.get("liftBucketMotor");
+        //mainBucketMotor = hwMap.dcMotor.get("mainBucketMotor");
+        //intakeMotor = hwMap.dcMotor.get("intakeMotor");
+
+        // Set Default Motor Directions
+        motor0.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        motor1.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
+        motor2.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        motor3.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
+
+        turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        shoulderMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        wristMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+
+        // Set all motors to zero power
+        motor0.setPower(0);
+        motor1.setPower(0);
+        motor2.setPower(0);
+        motor3.setPower(0);
+
+        turretMotor.setPower(0);
+        shoulderMotor.setPower(0);
+        wristMotor.setPower(0);
+
+        myOpMode.telemetry.addLine("initialized motor power to zero");
+        myOpMode.telemetry.update();
+
+        myOpMode.telemetry.addLine("initialized other motor power to zero");
+        myOpMode.telemetry.update();
+
+
+
+    }
+
 }
+
+
 
 
 
