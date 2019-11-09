@@ -28,6 +28,7 @@ package org.firstinspires.ftc.teamcode;
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -68,7 +69,10 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
+
+@Disabled
 public class Image_Recognition {
+
 
     HardwareMap hwMap = null;
     private LinearOpMode myOpMode;

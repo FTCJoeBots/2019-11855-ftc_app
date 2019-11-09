@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -26,7 +27,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  *G-Sheet of time VS Heading for autonomous -> https://docs.google.com/a/stjoebears.com/spreadsheets/d/1pqv0iN94fFd5KvX1YIWP7z39HgpURXsscn0zPujs1q4/edit?usp=sharing
 */
 @TeleOp(name="teleTurretTest", group="TeleOp")
-
+@Disabled
 public class teleTurretTestSanjan extends LinearOpMode {
 
     double forward;

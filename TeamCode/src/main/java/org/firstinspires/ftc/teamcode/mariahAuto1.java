@@ -65,7 +65,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  */
 
 @Autonomous(name="MariahAutoTest", group="JoeBot")
-//@Disabled
+@Disabled
 public class mariahAuto1 extends LinearOpMode {
 
     /* Declare OpMode members. */
