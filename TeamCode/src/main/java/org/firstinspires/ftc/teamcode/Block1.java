@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="Block 1", group="Pushbot")
-//@Disabled
+@Disabled
 public class Block1 extends LinearOpMode {
 
     /* Declare OpMode members. */

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -26,14 +27,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  *G-Sheet of time VS Heading for autonomous -> https://docs.google.com/a/stjoebears.com/spreadsheets/d/1pqv0iN94fFd5KvX1YIWP7z39HgpURXsscn0zPujs1q4/edit?usp=sharing
  */
 @TeleOp(name="Servo TeleOp Test2", group="TeleOp")
-
+@Disabled
 public class ServoTest2 extends LinearOpMode {
     // Servo goes from 0.5 to 1
     double clampServoPos = 0.5;
 
     HardwareJoeBot2019 robot = new HardwareJoeBot2019();
 
-    @Override
     public void runOpMode() throws InterruptedException {
 
         robot.init(hardwareMap, this);
