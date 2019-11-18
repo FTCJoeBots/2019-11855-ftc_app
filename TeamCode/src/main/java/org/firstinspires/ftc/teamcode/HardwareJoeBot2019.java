@@ -234,7 +234,6 @@ public class HardwareJoeBot2019 {
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         shoulderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         shoulderMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -244,10 +243,10 @@ public class HardwareJoeBot2019 {
         shoulderMotor.setTargetPosition(0);
         shoulderMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         shoulderMotor.setPower(.2);
-        wristMotor.setTargetPosition(WRIST_MIN_POS);
-        wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        wristMotor.setPower(.2);
-        moveShoulder(SHOULDER_MIN_POS);
+
+        // We don't want to call moveShoulder yet, because we need to make sure the wrist is okay
+        // moveShoulder(SHOULDER_MIN_POS);
+
 
 
         //Set TurrentMotor to start Position
@@ -897,6 +896,27 @@ public class HardwareJoeBot2019 {
 
     }
 
+    public void moveWrist (double power) {
+
+        // This method will move the wrist with no regard to the minimum stop and start positions.
+        // Positive power will increase the wrist encoder targetValue; negative power will decrease
+        // the wrist encoder target value.
+
+        int newWristTarget = 0;
+
+        if (power > 0) {
+            // Move the wrist up
+            newWristTarget = wristMotor.getCurrentPosition() + 25;
+        } else if (power < 0) {
+            // Move the wrist down
+            newWristTarget = wristMotor.getCurrentPosition() - 25;
+        }
+
+        wristMotor.setTargetPosition(newWristTarget);
+
+    }
+
+
 
     public void moveShoulder(int targetPos) {
 
@@ -965,6 +985,20 @@ public class HardwareJoeBot2019 {
             // Set the motors back to standard mode
             setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
+    }
+
+    public void wristInit() {
+
+        // This method assumes the wrist is already initialized in the main robot init. This method will
+        // makes sure the robot is in the right mode, stop and reset the encoder (which assumes the wrist
+        // is in the "up" position) and them move the wrist back down to the horizonal position
+
+        wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wristMotor.setTargetPosition(WRIST_MIN_POS);
+        wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wristMotor.setPower(.3);
+
+
     }
 
     /* Initialize standard Hardware interfaces */

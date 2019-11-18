@@ -50,6 +50,9 @@ public class teleOpSimpleMecanum extends LinearOpMode {
     boolean bCurrStateY;
     boolean bPrevStateY = false;
 
+    boolean bWristPanicCurr = false;
+    boolean isbWristPanicPrev = false;
+
     HardwareJoeBot2019 robot = new HardwareJoeBot2019();
 
     @Override
@@ -60,6 +63,7 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
         robot.init(hardwareMap, this);
 
+        robot.wristInit();
 
         waitForStart();
 
@@ -173,6 +177,25 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
             }
             bPrevStateY = bCurrStateY;
+
+
+            // WRIST PANIC CODE: This code will move the wrist up and re-zero the encoder
+            // Note that the wrist will keep moving as long as both "stick" buttons are pressed
+            // when the sticks are released, it will reinitialize the wrist and move it back to the
+            // horizontal position
+
+            if (gamepad2.left_stick_button && gamepad2.right_stick_button) {
+                bWristPanicCurr = true;
+                robot.moveWrist(0.5);
+            } else {
+                if (bWristPanicCurr) {
+                    // We were in a wrist panic mode, but we're not now. call wrist init
+                    robot.wristInit();
+                    bWristPanicCurr = false;
+
+                }
+
+            }
 
 
             /*
