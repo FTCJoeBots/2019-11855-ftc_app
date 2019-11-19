@@ -53,6 +53,9 @@ public class teleOpSimpleMecanum extends LinearOpMode {
     boolean bWristPanicCurr = false;
     boolean isbWristPanicPrev = false;
 
+    boolean currState1A;
+    boolean prevState1A = false;
+
     HardwareJoeBot2019 robot = new HardwareJoeBot2019();
 
     @Override
@@ -73,6 +76,26 @@ public class teleOpSimpleMecanum extends LinearOpMode {
         while (opModeIsActive()) {
 
 
+
+            // Set SPEED LIMIT
+            currState1A = gamepad1.a;
+            if (currState1A && currState1A != prevState1A) {
+
+                // This is the toggle for the Speed Limit
+                // Check to see if robot.speedLimitEnabled is true
+
+                if (robot.speedLimitEnabled) {
+                    // Speed limit is enabled. Let's disable it.
+                    robot.speedLimitEnabled = false;
+                } else {
+                    // Speed Limit is not enabled. Let's enable it.
+                    robot.speedLimitEnabled = true;
+                }
+
+            }
+            prevState1A = currState1A;
+
+
             //Drive Via "Analog Sticks" (Not Toggle)
             //Set initial motion parameters to Gamepad1 Inputs
             forward = -gamepad1.left_stick_y;
@@ -84,6 +107,12 @@ public class teleOpSimpleMecanum extends LinearOpMode {
             k = .6;
             clockwise = clockwise * k; //Make sure the "= Clockwise" is "= -clockwise"
 
+
+            robot.moveRobot(forward, right, clockwise);
+
+            /*
+
+            COMMENTING OUT THIS SECTION -- WILL USE moveRobot() instead
 
             // Calculate motor power
             power0 = forward + clockwise + right;
@@ -115,6 +144,8 @@ public class teleOpSimpleMecanum extends LinearOpMode {
             robot.motor2.setPower(power2);
             robot.motor3.setPower(power3);
 
+
+             */
 
             // Because of the gearing, positive motor power rotates the turret clockwise, but decreases the
             // encoder counts. So our "right" (clockwise) motion will decrease encoder counts
@@ -216,6 +247,13 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
             // Update Telemetry
             telemetry.addData(">", "Press Stop to end test.");
+
+            if (robot.speedLimitEnabled) {
+                telemetry.addLine("Speed Limit is ENABLED");
+            } else {
+                telemetry.addLine("Speed Limit is DISABLED");
+            }
+
             telemetry.addData("Turret Target:", robot.turretMotor.getTargetPosition());
             telemetry.addData("Turret Motor Position: ", robot.turretMotor.getCurrentPosition());
             telemetry.addData("Wrist Position: ", robot.wristMotor.getCurrentPosition());
