@@ -65,7 +65,8 @@ public class HardwareJoeBot2019 {
     public int grabberState = 1; //1=open; 2=mid; 3=close
     public boolean bFoundationClosed = false;
 
-
+    // Declare Speed Limit Tracker
+    public boolean speedLimitEnabled = false;
 
 
     // Declare Sensors
@@ -137,6 +138,9 @@ public class HardwareJoeBot2019 {
 
     static final int TURRET_MAX = -4050;
     static final int TURRET_MIN = 10;
+
+    static final double SPEED_LIMIT = 0.3;
+
 
 
 
@@ -359,6 +363,12 @@ public class HardwareJoeBot2019 {
         power2 = forward - clockwise - right;
         power3 = forward + clockwise + right;
 
+        if (speedLimitEnabled) {
+            power0 = power0 * SPEED_LIMIT;
+            power1 = power1 * SPEED_LIMIT;
+            power2 = power2 * SPEED_LIMIT;
+            power3 = power3 * SPEED_LIMIT;
+        }
 
         // Normalize Wheel speeds so that no speed exceeds 1.0
         max = Math.abs(power0);
