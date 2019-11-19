@@ -358,10 +358,10 @@ public class HardwareJoeBot2019 {
 
         // gcf - inverting clockwise variables for testing
 
-        power0 = forward - clockwise + right;
-        power1 = forward + clockwise - right;
-        power2 = forward - clockwise - right;
-        power3 = forward + clockwise + right;
+        power0 = forward + clockwise + right;
+        power1 = forward - clockwise - right;
+        power2 = forward + clockwise - right;
+        power3 = forward - clockwise + right;
 
         if (speedLimitEnabled) {
             power0 = power0 * SPEED_LIMIT;
