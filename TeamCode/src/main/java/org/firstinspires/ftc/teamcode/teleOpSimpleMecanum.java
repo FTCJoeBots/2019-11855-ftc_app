@@ -56,6 +56,20 @@ public class teleOpSimpleMecanum extends LinearOpMode {
     boolean currState1A;
     boolean prevState1A = false;
 
+    boolean currState2dpadUp;
+    boolean prevState2dpadUp = false;
+    boolean currState2dpadDown;
+    boolean prevState2dpadDown = false;
+    boolean currState2dpadLeft;
+    boolean prevState2dpadLeft = false;
+    boolean currState2dpadRight;
+    boolean prevState2dpadRight = false;
+
+    int shoulderPositionIncrement = 50;
+    double powerIncrement = 0.1;
+    double shoulderTargetPower = 0.2;
+    double wristTargetPower = 0.2;
+
     HardwareJoeBot2019 robot = new HardwareJoeBot2019();
 
     @Override
@@ -186,16 +200,47 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
             // Manually move wrist and shoulder based on dpad
             if (gamepad2.dpad_up) {
-                robot.moveShoulder(robot.shoulderMotor.getCurrentPosition() + 100);
+                robot.moveShoulder(robot.shoulderMotor.getCurrentPosition() + shoulderPositionIncrement);
             } else if (gamepad2.dpad_down) {
-                robot.moveShoulder(robot.shoulderMotor.getCurrentPosition() - 100);
+                robot.moveShoulder(robot.shoulderMotor.getCurrentPosition() - shoulderPositionIncrement);
             }
 
-            if (gamepad2.dpad_left) {
 
-            } else if (gamepad2.dpad_right) {
 
+            // USE DPAD TO ADJUST SHOULDER/WRIST SPEED
+
+            currState2dpadDown = gamepad2.dpad_down;
+            if (currState2dpadDown && currState2dpadDown != prevState2dpadDown) {
+                // decrease Shoulder power
+                shoulderTargetPower = shoulderTargetPower - powerIncrement;
+                robot.shoulderMotor.setPower(shoulderTargetPower);
+                robot.wristMotor.setPower(shoulderTargetPower);
             }
+            prevState2dpadDown = currState2dpadDown;
+
+            currState2dpadUp = gamepad2.dpad_up;
+            if (currState2dpadUp && currState2dpadUp != prevState2dpadUp) {
+                // increase Shoulder power
+                shoulderTargetPower = shoulderTargetPower + powerIncrement;
+                robot.shoulderMotor.setPower(shoulderTargetPower);
+                robot.wristMotor.setPower(shoulderTargetPower);
+            }
+            prevState2dpadUp = currState2dpadUp;
+
+            currState2dpadLeft = gamepad2.dpad_left;
+            if (currState2dpadLeft && currState2dpadLeft != prevState2dpadLeft) {
+                // decrease Shoulder increment
+                shoulderPositionIncrement = shoulderPositionIncrement - 10;
+            }
+            prevState2dpadLeft = currState2dpadLeft;
+
+            currState2dpadRight = gamepad2.dpad_right;
+            if (currState2dpadRight && currState2dpadRight != prevState2dpadRight) {
+                // increase Shoulder increment
+                shoulderPositionIncrement = shoulderPositionIncrement + 10;
+            }
+            prevState2dpadLeft = currState2dpadLeft;
+
 
             bCurrStateY = gamepad2.y;
             if (bCurrStateY && bCurrStateY != bPrevStateY) {
@@ -253,7 +298,8 @@ public class teleOpSimpleMecanum extends LinearOpMode {
             } else {
                 telemetry.addLine("Speed Limit is DISABLED");
             }
-
+            telemetry.addData("Shoulder Power: ", "%1.2f", shoulderTargetPower);
+            telemetry.addData("Shoulder Increment: ", "%3d", shoulderPositionIncrement);
             telemetry.addData("Turret Target:", robot.turretMotor.getTargetPosition());
             telemetry.addData("Turret Motor Position: ", robot.turretMotor.getCurrentPosition());
             telemetry.addData("Wrist Position: ", robot.wristMotor.getCurrentPosition());
