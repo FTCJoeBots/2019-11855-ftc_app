@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType;
@@ -55,6 +56,10 @@ public class HardwareJoeBot2019 {
     public DcMotor turretMotor = null;
     public DcMotor shoulderMotor = null;
     public DcMotor wristMotor = null;
+
+    // Declare Limit Switches
+    public DigitalChannel lsWristUp;
+    public DigitalChannel lsWristDown;
 
 
     //Declare Servo
@@ -133,13 +138,22 @@ public class HardwareJoeBot2019 {
     static final int SHOULDER_MAX_POS = 4200;
 
     static final int WRIST_START_POS = 0;
-    static final int WRIST_MIN_POS = -170;
-    static final int WRIST_MAX_POS = -300;
+    static final int WRIST_MIN_POS = -150;
+    static final int WRIST_MAX_POS = -320;
 
     static final int TURRET_MAX = -4050;
     static final int TURRET_MIN = 10;
 
     static final double SPEED_LIMIT = 0.3;
+
+    static final double     ARM_LOW_SPEED = 0.25;
+    static final int        ARM_LOW_INCREMENT = 50;
+    static final double     ARM_HIGH_SPEED = 0.75;
+    static final int     ARM_HIGH_INCREMENT = 150;
+
+    private int armIncrement = ARM_HIGH_INCREMENT;
+
+    public boolean bArmSpeedLimitEnabled = false;
 
 
 
@@ -176,6 +190,10 @@ public class HardwareJoeBot2019 {
         foundationClamp = hwMap.servo.get("foundationServo");
         releaseFoundation();
 
+
+        // Map Limit Switches
+        lsWristDown = hwMap.get(DigitalChannel.class, "lsWristDown");
+        lsWristUp   = hwMap.get(DigitalChannel.class, "lsWristUp");
 
 
         //liftBucketMotor = hwMap.dcMotor.get("liftBucketMotor");
@@ -928,13 +946,32 @@ public class HardwareJoeBot2019 {
 
 
 
+    public void moveShoulderUp(){
+
+        int shoulderTargetPosition;
+
+        shoulderTargetPosition = shoulderMotor.getTargetPosition() + armIncrement;
+
+        moveShoulder(shoulderTargetPosition);
+
+    }
+
+    public void moveShoulderDown(){
+
+        int shoulderTargetPosition;
+
+        shoulderTargetPosition = shoulderMotor.getTargetPosition() - armIncrement;
+
+        moveShoulder(shoulderTargetPosition);
+
+    }
+
     public void moveShoulder(int targetPos) {
 
         int shoulderPos; //shoulder max position=4200)
         int wristPos;
 
         shoulderPos = targetPos;
-        wristPos = (-170 - (shoulderPos/32));
 
         // TODO: Add error/bounds checking
         // if shoulder position is greater than 4200, then it stays at 4200
@@ -947,67 +984,75 @@ public class HardwareJoeBot2019 {
             shoulderPos = SHOULDER_MIN_POS;
         }
 
-        // Even though the WRIST is MAX POS is the value is still negative because of motor direction.
-        if (wristPos < WRIST_MAX_POS) {
-            wristPos = WRIST_MAX_POS;
-        }
-
-        if (wristPos > WRIST_MIN_POS) {
-            wristPos = WRIST_MIN_POS;
-        }
-
-
-
         shoulderMotor.setTargetPosition(shoulderPos);
-        wristMotor.setTargetPosition(wristPos);
 
     }
 
+    public void alignWrist() {
 
+        // This method will align the wrist based on the current shoulderMotor Position
 
+        int wristTargetPosition = (-150 - (shoulderMotor.getCurrentPosition()/32));
 
-
-
-
-
-
-
-
-
-
-
-    public void liftMotorInches(double inches, double power){
-
-        // Declare needed variables
-        int newliftMotorTarget;
-
-
-        // Check to make sure the OpMode is still active; If it isn't don't run the method
-        if (myOpMode.opModeIsActive()) {
-
-
-            // Set Robot to RUN_TO_POSITION mode
-            setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // Reset the runtime
-            runtime.reset();
-
-            // Set the motors back to standard mode
-            setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if (wristTargetPosition > WRIST_MIN_POS) {
+            wristTargetPosition = WRIST_MIN_POS;
         }
+
+        if (wristTargetPosition < WRIST_MAX_POS) {
+            wristTargetPosition = WRIST_MAX_POS;
+        }
+
+        wristMotor.setTargetPosition(wristTargetPosition);
+
+
+    }
+
+    public void toggleArmSpeedLimit() {
+
+        if (bArmSpeedLimitEnabled) {
+
+            // Robot already has the arm speed limit enabled. We want to disable the speed limit
+
+            armIncrement = ARM_HIGH_INCREMENT;
+            shoulderMotor.setPower(ARM_HIGH_SPEED);
+            wristMotor.setPower((ARM_HIGH_SPEED));
+
+            bArmSpeedLimitEnabled = false;
+
+        } else {
+
+            // Speed limit is not enabled. Enable the speed limit
+
+            armIncrement = ARM_LOW_INCREMENT;
+            shoulderMotor.setPower(ARM_LOW_SPEED);
+            wristMotor.setPower(ARM_LOW_SPEED);
+
+            bArmSpeedLimitEnabled = true;
+
+        }
+
+
     }
 
     public void wristInit() {
 
-        // This method assumes the wrist is already initialized in the main robot init. This method will
-        // makes sure the robot is in the right mode, stop and reset the encoder (which assumes the wrist
-        // is in the "up" position) and them move the wrist back down to the horizonal position
+        // This method assumes the wrist is already defined in the main robot init. It will move the
+        // wrist "up" until the limit switch is pressed. Once up, it will reset the encoder to zero.
+
+        wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while (myOpMode.opModeIsActive() && lsWristUp.getState() == false) {
+
+            // Move the wrist up
+            wristMotor.setPower(-0.2);
+
+        }
+
+        wristMotor.setPower(0);
 
         wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        wristMotor.setTargetPosition(WRIST_MIN_POS);
+        wristMotor.setTargetPosition(0);
         wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        wristMotor.setPower(.3);
-
+        toggleArmSpeedLimit();
 
     }
 
