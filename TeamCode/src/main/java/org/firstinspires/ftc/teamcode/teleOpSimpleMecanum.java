@@ -56,6 +56,10 @@ public class teleOpSimpleMecanum extends LinearOpMode {
     boolean currState1A;
     boolean prevState1A = false;
 
+    boolean currState2x;
+    boolean prevState2x = false;
+
+
     HardwareJoeBot2019 robot = new HardwareJoeBot2019();
 
     @Override
@@ -110,42 +114,6 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
             robot.moveRobot(forward, right, clockwise);
 
-            /*
-
-            COMMENTING OUT THIS SECTION -- WILL USE moveRobot() instead
-
-            // Calculate motor power
-            power0 = forward + clockwise + right;
-            power1 = forward - clockwise - right;
-            power2 = forward + clockwise - right;
-            power3 = forward - clockwise + right;
-
-            // Normalize Wheel speeds so that no speed exceeds 1.0
-            max = Math.abs(power0);
-            if (Math.abs(power1) > max) {
-                max = Math.abs(power1);
-            }
-            if (Math.abs(power2) > max) {
-                max = Math.abs(power2);
-            }
-            if (Math.abs(power3) > max) {
-                max = Math.abs(power3);
-            }
-
-            if (max > 1) {
-                power0 /= max;
-                power1 /= max;
-                power2 /= max;
-                power3 /= max;
-            }
-
-            robot.motor0.setPower(power0);
-            robot.motor1.setPower(power1);
-            robot.motor2.setPower(power2);
-            robot.motor3.setPower(power3);
-
-
-             */
 
             // Because of the gearing, positive motor power rotates the turret clockwise, but decreases the
             // encoder counts. So our "right" (clockwise) motion will decrease encoder counts
@@ -186,16 +154,26 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
             // Manually move wrist and shoulder based on dpad
             if (gamepad2.dpad_up) {
-                robot.moveShoulder(robot.shoulderMotor.getCurrentPosition() + 100);
+                robot.moveShoulderUp();
             } else if (gamepad2.dpad_down) {
-                robot.moveShoulder(robot.shoulderMotor.getCurrentPosition() - 100);
+                robot.moveShoulderDown();
             }
 
-            if (gamepad2.dpad_left) {
+            robot.alignWrist();
 
-            } else if (gamepad2.dpad_right) {
+            // USE X to adjust ArmSpeedLimit
+
+            currState2x = gamepad2.x;
+            if (currState2x && currState2x != prevState2x) {
+
+                //Toggle ArmSpeedLimit
+
+                robot.toggleArmSpeedLimit();
 
             }
+            prevState2x = currState2x;
+
+
 
             bCurrStateY = gamepad2.y;
             if (bCurrStateY && bCurrStateY != bPrevStateY) {
@@ -229,21 +207,6 @@ public class teleOpSimpleMecanum extends LinearOpMode {
             }
 
 
-            /*
-            if (gamepad2.right_trigger > 0) {
-                // open clamp
-
-                robot.servoOpen();
-
-            }
-
-            if (gamepad2.left_trigger == -1) {
-                // close clamp
-
-                robot.servoClose();
-
-            }
-            */
 
             // Update Telemetry
             telemetry.addData(">", "Press Stop to end test.");
@@ -252,6 +215,11 @@ public class teleOpSimpleMecanum extends LinearOpMode {
                 telemetry.addLine("Speed Limit is ENABLED");
             } else {
                 telemetry.addLine("Speed Limit is DISABLED");
+            }
+            if (robot.bArmSpeedLimitEnabled) {
+                telemetry.addLine("ARM Speed Limit is ENABLED");
+            } else {
+                telemetry.addLine("ARM Speed Limit is DISABLED");
             }
 
             telemetry.addData("Turret Target:", robot.turretMotor.getTargetPosition());
