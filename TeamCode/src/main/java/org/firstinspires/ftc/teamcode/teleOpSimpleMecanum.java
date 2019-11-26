@@ -47,8 +47,13 @@ public class teleOpSimpleMecanum extends LinearOpMode {
     boolean currStateB;
     boolean prevStateB = false;
 
+    boolean currStatecapstoneA = false;
+    boolean prevStatecapstoneA = false;
+
     boolean bCurrStateY;
     boolean bPrevStateY = false;
+
+
 
     boolean bWristPanicCurr = false;
     boolean isbWristPanicPrev = false;
@@ -98,6 +103,10 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
             }
             prevState1A = currState1A;
+
+            currStatecapstoneA = gamepad1.a;
+
+            currStatecapstoneA = gamepad1.x;
 
 
             //Drive Via "Analog Sticks" (Not Toggle)
@@ -150,6 +159,21 @@ public class teleOpSimpleMecanum extends LinearOpMode {
                 robot.openClamp();
 
             }
+
+            currStatecapstoneA = gamepad1.x;
+            if ((currStatecapstoneA == true) && (currStatecapstoneA != prevStatecapstoneA)) {
+                robot.capstoneClose();
+            }
+            currStatecapstoneA = gamepad1.a;
+            if ((currStatecapstoneA == true) && (currStatecapstoneA != prevStatecapstoneA)) {
+
+                robot.capstoneOpen();
+
+
+            }
+
+
+
             prevStateB = currStateB;
 
             // Manually move wrist and shoulder based on dpad

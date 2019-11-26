@@ -73,6 +73,8 @@ public class HardwareJoeBot2019 {
     // Declare Speed Limit Tracker
     public boolean speedLimitEnabled = false;
 
+    public Servo capstoneServo = null;
+
 
     // Declare Sensors
     public BNO055IMU imu;                  // The IMU sensor object
@@ -125,6 +127,8 @@ public class HardwareJoeBot2019 {
     static final double LIFT_COUNTS_PER_MOTOR_REV = 4.0;
     static final double LIFT_COUNTS_PER_INCH = (LIFT_THREADS_PER_INCH * LIFT_GEAR_REDUCTION * LIFT_COUNTS_PER_MOTOR_REV);
 
+    static final double CAPSTONE_OPEN = 0.2;
+    static final double CAPSTONE_CLOSE = 0;
 
 
     static final double FOUNDATION_DOWN = 1.0;
@@ -189,6 +193,8 @@ public class HardwareJoeBot2019 {
 
         foundationClamp = hwMap.servo.get("foundationServo");
         releaseFoundation();
+
+        capstoneServo = hwMap.servo.get("capstoneServo");
 
 
         // Map Limit Switches
@@ -895,6 +901,19 @@ public class HardwareJoeBot2019 {
 
     }
 
+
+    public void capstoneOpen() {
+
+        capstoneServo.setPosition(CAPSTONE_OPEN);
+    }
+
+
+    public void capstoneClose() {
+
+        capstoneServo.setPosition(CAPSTONE_CLOSE);
+    }
+
+
     // releases the foundation
     public void releaseFoundation () {
 
@@ -1074,6 +1093,7 @@ public class HardwareJoeBot2019 {
         wristMotor = hwMap.dcMotor.get("wristMotor");
 
 
+
         // Define and Initialize Servos
         //clampServo = hwMap.servo.get("clampServo");
         //clampServo.setPosition(CLAMP_MAX_POSITION);
@@ -1096,6 +1116,7 @@ public class HardwareJoeBot2019 {
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         shoulderMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         wristMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
 
 
