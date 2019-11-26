@@ -59,8 +59,11 @@ public class HardwareJoeBot2019 {
 
     //Declare Servo
 
+
+
     public Servo clampServo = null;
     public Servo foundationClamp = null;
+    public Servo capstoneServo = null;
 
     public int grabberState = 1; //1=open; 2=mid; 3=close
     public boolean bFoundationClosed = false;
@@ -122,8 +125,16 @@ public class HardwareJoeBot2019 {
 
 
 
+
+
+
     static final double FOUNDATION_DOWN = 1.0;
     static final double FOUNDATION_UP = 0.2;
+
+
+    static final double CAPSTONE_OPEN = 0.2;
+    static final double CAPSTONE_CLOSE = 0;
+
 
     static final double GRABBER_CLAMP_OPEN = 0.9;
     static final double GRABBER_CLAMP_CLOSE = 0.45;
@@ -175,6 +186,8 @@ public class HardwareJoeBot2019 {
 
         foundationClamp = hwMap.servo.get("foundationServo");
         releaseFoundation();
+
+        capstoneServo = hwMap.servo.get("capstoneServo");
 
 
 
@@ -246,7 +259,7 @@ public class HardwareJoeBot2019 {
         //set shoulderMotor to RUN_TO_POSITION mode
         shoulderMotor.setTargetPosition(0);
         shoulderMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        shoulderMotor.setPower(.2);
+        shoulderMotor.setPower(.43);
 
         // We don't want to call moveShoulder yet, because we need to make sure the wrist is okay
         // moveShoulder(SHOULDER_MIN_POS);
@@ -694,9 +707,9 @@ public class HardwareJoeBot2019 {
 
         double targetPower = 0;
 
-        double maxPower = 1;
+        double maxPower = -power;
 
-        double minPower = .1;
+        double minPower = -.1;
 
         while(myOpMode.opModeIsActive() && abs(error)>closeEnough){
 
@@ -711,7 +724,7 @@ public class HardwareJoeBot2019 {
                 targetPower = -targetPower;
             }
 
-            moveRobot(0,0,targetPower);
+            moveRobot(0,0, targetPower);
 
             currentHeading = getAngle();
             error = targetHeading-currentHeading;
@@ -884,6 +897,18 @@ public class HardwareJoeBot2019 {
         bFoundationClosed = false;
 
     }
+
+    public void capstoneOpen() {
+
+        capstoneServo.setPosition(CAPSTONE_OPEN);
+    }
+
+
+    public void capstoneClose() {
+
+        capstoneServo.setPosition(CAPSTONE_CLOSE);
+    }
+
 
     // opens servo for clamp
     public void openClamp(){

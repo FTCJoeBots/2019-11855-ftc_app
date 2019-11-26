@@ -58,24 +58,77 @@ public class blueFoundationParking extends LinearOpMode {
         waitForStart();
 
         //move to foundation
-        robot.moveInches(32,0.25, 10);
-        sleep(1000);
-        robot.strafeSeconds(640,-0.7);
+        robot.moveInches(22.5,1, 10);
+        sleep(750);
+        robot.strafeSeconds(540,-0.7);
         //grab foundation
         robot.grabFoundation();
 
-        sleep(1000);
+        sleep(500);
         //drive into building site
-        robot.moveInches(-80, 0.25,15);
+        robot.moveInches(-80, 0.4,15);
+       /*
         robot.strafeSeconds(500, 0.5);
-        robot.moveInches(-20, 0.25, 10);
-
+        robot.moveInches(-1, 0.25, 10);
+        */
         //release grabber
         robot.releaseFoundation();
-        sleep(1000);
+        sleep(500);
 
         //back up under skybridge
-        robot.moveInches(44,0.25,10);
+        robot.moveInches(22,1,10);
+
+        sleep(200);
+        //strafe left of the skybridge
+        robot.strafeSeconds(450, -1);
+
+        sleep(500);
+        //moves foward
+        robot.moveInches(17,1,10);
+        telemetry.addLine("done");
+        telemetry.update();
+        sleep(1000);
+
+        //rotate left
+        robot.rotateDegrees(-90,0.5);
+
+        //moves back
+        robot.moveInches(-17,1,10);
+
+        //moves wrist later
+
+
+        //moves foward
+        robot.moveInches(22,1,10);
+
+        //moves back
+        robot.moveInches(-17,1,10);
+
+        //rotate
+        robot.rotateDegrees(-90,1);
+
+        //moves foward
+        robot.moveInches(78,1,10);
+
+       //srafe left
+       robot.strafeSeconds(500,1);
+
+        // arm goes up here
+
+
+        //drops block here
+
+
+        //wrist goes back up here
+
+
+        //srafe right
+        robot.strafeSeconds(500,-1);
+
+        //goes back under the bridge
+        robot.moveInches(42,1,15);
+
+
 
         telemetry.addLine("We're done. Press stop.");
         telemetry.update();

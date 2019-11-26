@@ -56,6 +56,9 @@ public class teleOpSimpleMecanum extends LinearOpMode {
     boolean currState1A;
     boolean prevState1A = false;
 
+    boolean currStatecapstoneA = false;
+    boolean prevStatecapstoneA = false;
+
     HardwareJoeBot2019 robot = new HardwareJoeBot2019();
 
     @Override
@@ -78,7 +81,7 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
 
             // Set SPEED LIMIT
-            currState1A = gamepad1.a;
+            currState1A = gamepad1.y;
             if (currState1A && currState1A != prevState1A) {
 
                 // This is the toggle for the Speed Limit
@@ -103,6 +106,9 @@ public class teleOpSimpleMecanum extends LinearOpMode {
             right = -gamepad1.left_trigger + gamepad1.right_trigger;
             clockwise = gamepad1.right_stick_x;
 
+            currStatecapstoneA = gamepad1.a;
+
+            currStatecapstoneA = gamepad1.x;
             // Add a tuning constant "K" to tune rotate axis sensitivity
             k = .6;
             clockwise = clockwise * k; //Make sure the "= Clockwise" is "= -clockwise"
@@ -208,6 +214,19 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
             }
             bPrevStateY = bCurrStateY;
+
+            currStatecapstoneA = gamepad1.x;
+            if ((currStatecapstoneA == true) && (currStatecapstoneA != prevStatecapstoneA)) {
+                robot.capstoneClose();
+            }
+            currStatecapstoneA = gamepad1.a;
+            if ((currStatecapstoneA == true) && (currStatecapstoneA != prevStatecapstoneA)) {
+
+                robot.capstoneOpen();
+
+
+            }
+
 
 
             // WRIST PANIC CODE: This code will move the wrist up and re-zero the encoder

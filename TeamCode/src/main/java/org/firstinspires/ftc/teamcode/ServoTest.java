@@ -27,11 +27,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  *G-Sheet of time VS Heading for autonomous -> https://docs.google.com/a/stjoebears.com/spreadsheets/d/1pqv0iN94fFd5KvX1YIWP7z39HgpURXsscn0zPujs1q4/edit?usp=sharing
  */
 @TeleOp(name="Servo TeleOp Test", group="TeleOp")
-@Disabled
+//@Disabled
 public class ServoTest extends LinearOpMode {
 
     double foundationServoPos = 0.3;
     double clampServoPos = 0.5;
+    double capstoneServoPos = 0.6;
+
 
     HardwareJoeBot2019 robot = new HardwareJoeBot2019();
 
@@ -45,7 +47,7 @@ public class ServoTest extends LinearOpMode {
 
         robot.clampServo.setPosition(clampServoPos);
         robot.foundationClamp.setPosition(foundationServoPos);
-
+        robot.capstoneServo.setPosition(capstoneServoPos);
 
         //start of loop
         while (opModeIsActive()) {
@@ -63,18 +65,18 @@ public class ServoTest extends LinearOpMode {
             }
 
             if(gamepad1.dpad_down) {
-                clampServoPos -= 0.05;
+                capstoneServoPos -= 0.05;
                 sleep(500);
             }
 
             if(gamepad1.dpad_up) {
-                clampServoPos += 0.05;
+                capstoneServoPos += 0.05;
                 sleep(500);
             }
 
             robot.clampServo.setPosition(clampServoPos);
             robot.foundationClamp.setPosition(foundationServoPos);
-
+            robot.capstoneServo.setPosition(capstoneServoPos);
 
             //------------------------------------------
             //-------------------------------------------
@@ -87,7 +89,7 @@ public class ServoTest extends LinearOpMode {
 
             telemetry.addData("foundation clamp", foundationServoPos);
             telemetry.addData("Grabber Clamp: ", clampServoPos);
-
+            telemetry.addData("capstoneServo", capstoneServoPos);
             telemetry.update();
             idle();
 
