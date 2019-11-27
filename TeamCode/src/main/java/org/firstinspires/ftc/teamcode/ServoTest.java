@@ -27,12 +27,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  *G-Sheet of time VS Heading for autonomous -> https://docs.google.com/a/stjoebears.com/spreadsheets/d/1pqv0iN94fFd5KvX1YIWP7z39HgpURXsscn0zPujs1q4/edit?usp=sharing
  */
 @TeleOp(name="Servo TeleOp Test", group="TeleOp")
-@Disabled
+//@Disabled
 public class ServoTest extends LinearOpMode {
 
     double foundationServoPos = 0.3;
     double clampServoPos = 0.5;
-
+//
     HardwareJoeBot2019 robot = new HardwareJoeBot2019();
 
     @Override

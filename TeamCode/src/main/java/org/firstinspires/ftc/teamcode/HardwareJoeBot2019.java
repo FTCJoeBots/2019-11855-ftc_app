@@ -135,8 +135,8 @@ public class HardwareJoeBot2019 {
     static final double FOUNDATION_UP = 0.2;
 
     static final double GRABBER_CLAMP_OPEN = 0.9;
-    static final double GRABBER_CLAMP_CLOSE = 0.45;
-    static final double GRABBER_CLAMP_MID = 0.7;
+    static final double GRABBER_CLAMP_CLOSE = 0.5;
+    static final double GRABBER_CLAMP_MID = 0.75;
   
     static final int SHOULDER_MIN_POS = 0;
     static final int SHOULDER_MAX_POS = 4200;
