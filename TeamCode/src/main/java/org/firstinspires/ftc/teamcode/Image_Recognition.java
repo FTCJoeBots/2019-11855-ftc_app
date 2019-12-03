@@ -28,7 +28,6 @@ package org.firstinspires.ftc.teamcode;
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -36,6 +35,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -69,10 +69,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-
-@Disabled
 public class Image_Recognition {
-
 
     HardwareMap hwMap = null;
     private LinearOpMode myOpMode;
@@ -81,13 +78,14 @@ public class Image_Recognition {
     private static final float mmPerInch = 25.4f;
 
     private static final float stoneZ = 2.00f * mmPerInch;
+    WebcamName webcamName = null;
 
     final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     final boolean PHONE_IS_PORTRAIT = true;
 
 
     final String VUFORIA_KEY =
-            "AVzCl0v/////AAAAGcfsmNB0+Ecxi9nnFUli4RtGGZORFTsrkrZTsSaEZcnHNkxhb5NbskfqT531gL1cmgLFZ5xxeICDdBlPxxEbD4JcUvUuIdXxpVesR7/EAFZ+DTSJT3YQb0sKm2SlOlfiMf7ZdCEUaXuymCZPB4JeoYdogDUOdsOrd0BTDV2Z+CtO3eSsHWfcY6bDLh8VJKSbeFdk533EzcA26uhfhwBxYlzbOsjPSVCB66P6GbIP9/UjI3lbTNi+tpCpnOZa2gwPjoTSeEjo9ZKtkPe3a/DpLq3OMnVwVnUmsDvoW++UbtOmg9WNFC/YkN7DCtMt91uPaJPL5vOERkA+uXliC1i44IT4EyfoN1ccLaJiXMFH63DE";
+            "AbHbHaL/////AAABmcpMhwIbJUQInBthtyhtOj1muLHL/yP72hHsIveD0T2LKfQLWlTCaVVTwR/aoGQC9qGr2u2hgvlLtpbwhhuVC+kCOh/C/qu6aWowrZH8CTC5ML1q4LnpcY374Kb80CEUK+jeOFzSOMWYcRuCjxwBxVxsUgGnPCN+mFlyyRPlcZgrh3SAys2XWmHFA+MkgSrHh6la3+GqzbA7LfKO65CJSdhtSFiWWvDnRDuVMV5CumryZDA2lEg9zuDnn+oHTeHb4nLHL2PDcWDexC20DWcrOeGQm47hf48GvF6dMlIUWk6cZZBQvzlSX4zKwqPXPwOCxqm31NtRAhfzKBM/fQyic24mWifHcZHvQoM2ytzUSUSq";
 
     OpenGLMatrix lastLocation = null;
     VuforiaLocalizer vuforia = null;
@@ -98,7 +96,11 @@ public class Image_Recognition {
     float phoneYRotate = 0;
     float phoneZRotate = 0;
 
+
+
     public void init(HardwareMap ahwMap, LinearOpMode opMode) {
+
+        webcamName = ahwMap.get(WebcamName.class, "Webcam1");
 
         opMode.telemetry.addLine("Starting init");
         opMode.telemetry.update();
@@ -106,8 +108,12 @@ public class Image_Recognition {
         int cameraMonitorViewId = ahwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", ahwMap.appContext.getPackageName());
         parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraName = webcamName;
         parameters.cameraDirection = CAMERA_CHOICE;
         parameters.useExtendedTracking = true;
+
+        myOpMode.telemetry.addLine("About to initialize vuforia");
+        myOpMode.telemetry.update();
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
         myOpMode.telemetry.addLine("defining trackables");
         myOpMode.telemetry.update();
@@ -129,7 +135,7 @@ public class Image_Recognition {
 
     }
 
-    /*public double SkystonePostion() {
+    public double SkystonePostion() {
 
         VuforiaTrackables targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
         myOpMode.telemetry.addLine("finishing init");
@@ -171,9 +177,10 @@ public class Image_Recognition {
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
-        /**  Let all the trackable listeners know where the phone is.
+        /**  Let all the trackable listeners know where the phone is.**/
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+
         }
 
 
@@ -196,30 +203,61 @@ public class Image_Recognition {
                     break;
                 }
             }
+            VectorF translation = lastLocation.getTranslation();
+
+            myOpMode.telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f", translation.get(0), translation.get(1), translation.get(2));
+
 
             // Provide feedback as to where the robot is located (if we know).
             if (targetVisible) {
                 // express position (translation) of robot in inches.
-                VectorF translation = lastLocation.getTranslation();
+
                 myOpMode.telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0), translation.get(1), translation.get(2));
-                if (translation.get(1) > -180) {
+                if (translation.get(1) < 0) {
                     myOpMode.telemetry.addLine("First Postion");
+                    return 1;
                 }
-                if (translation.get(1) < -180) {
+                if (translation.get(1) > 0) {
                     myOpMode.telemetry.addLine("Seccond Position");
+                    return 2;
                 }
 
 
             } else {
                 myOpMode.telemetry.addLine("Third Position");
+                return 3;
             }
             myOpMode.telemetry.update();
-        }
 
-        return 0;
+        }
+        VectorF translation = lastLocation.getTranslation();
+        if (targetVisible) {
+            // express position (translation) of robot in inches.
+
+            myOpMode.telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                    translation.get(0), translation.get(1), translation.get(2));
+            if (translation.get(1) < 0) {
+                myOpMode.telemetry.addLine("First Postion");
+                return 1;
+            }
+            if (translation.get(1) > 0) {
+                myOpMode.telemetry.addLine("Seccond Position");
+                return 2;
+            }
+
+
+        } else {
+            myOpMode.telemetry.addLine("Third Position");
+            return 3;
+        }
+        myOpMode.telemetry.update();
+
+        return 3;
+
     }
-**/
+
+
 
     public double[] skystone_cooridinates() {
         double[] coords = {-999, -999};
@@ -260,7 +298,7 @@ public class Image_Recognition {
         if (PHONE_IS_PORTRAIT) {
             phoneXRotate = 90;
         }
-        final float CAMERA_FORWARD_DISPLACEMENT = 9.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
+        final float CAMERA_FORWARD_DISPLACEMENT = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
 

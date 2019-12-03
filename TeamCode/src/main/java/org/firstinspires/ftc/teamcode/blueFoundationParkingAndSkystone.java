@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
-@Autonomous(name="Skystone and Blue Foundation", group="Pushbot")
+@Autonomous(name="Skystone and Blue Foundation webcam", group="Pushbot")
 //@Disabled
 public class blueFoundationParkingAndSkystone extends LinearOpMode {
 
@@ -54,20 +54,61 @@ public class blueFoundationParkingAndSkystone extends LinearOpMode {
         telemetry.addLine("Press > to Start");
         telemetry.update();
 
-        robot.init1(hardwareMap,this);
+        V.init(hardwareMap,this);
+        robot.init(hardwareMap,this);
         waitForStart();
 
+        //move to range of skystone
+        robot.moveInches(6.3,0.42, 10);
+        sleep(300);
+
+        double coords[] = {777,777};
+
+        int i = 0;
+        while(i < 25){
+            coords = V.skystone_cooridinates();
+            i= i + 1;
+            sleep(80);
+        }
+
+        if(coords[1] < 0){
+
+        robot.moveInches(35,.5 ,10);
+        robot.closeClamp();
+        robot.moveInches(-13,.75,10);
+        robot.strafeSeconds(900,1);
+        robot.moveInches(25,1,10);
+        robot.openClamp();
+        }else if(coords[1] != 777){
+
+            robot.strafeSeconds(300,1);
+            robot.moveInches(35,.5,10);
+            robot.closeClamp();
+            robot.moveInches(-13,.75,10);
+            robot.strafeSeconds(900,1);
+            robot.moveInches(25,1,10);
+            robot.openClamp();
+
+        }else{
+
+            robot.strafeSeconds(600,1);
+            robot.moveInches(35,.5,10);
+            robot.closeClamp();
+            robot.moveInches(-13,.75,10);
+            robot.strafeSeconds(900,1);
+            robot.moveInches(25,1,10);
+            robot.openClamp();
+        }
 
 
-       // robot.moveInches(24,0.45,10);
 
-        //strafe intil skystone goes here
+
 
 
 
 
         //move to foundation
-        robot.moveInches(29,0.5, 10);
+       // robot.moveInches(29,0.5, 10);
         sleep(1000);
         robot.strafeSeconds(640,-0.7);
         //grab foundation
@@ -84,9 +125,9 @@ public class blueFoundationParkingAndSkystone extends LinearOpMode {
         sleep(1000);
 
         //back up under skybridge
-        robot.moveInches(44,0.5,10);
-
-
+        robot.moveInches(18,1,10);
+        robot.strafeSeconds(500,1);
+        robot.moveInches(23,1,10);
 
 
 
