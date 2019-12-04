@@ -59,8 +59,8 @@ public class blueFoundationParkingAndSkystone extends LinearOpMode {
         waitForStart();
 
         //move to range of skystone
-        robot.moveInches(6.3,0.42, 10);
-        sleep(300);
+        //robot.moveInches(6.3,0.42, 10);
+        //sleep(300);
 
         double coords[] = {777,777};
 
@@ -72,11 +72,13 @@ public class blueFoundationParkingAndSkystone extends LinearOpMode {
         }
 
         if(coords[1] < 0){
-
-        robot.moveInches(35,.5 ,10);
+        robot.strafeSeconds(80,-.5);
+        robot.moveInches(35,.75 ,10);
         robot.closeClamp();
         robot.moveInches(-13,.75,10);
-        robot.strafeSeconds(900,1);
+        robot.rotateDegrees(-90,.5);
+        robot.moveInches(45,1,10);
+        robot.rotateDegrees(90,.5);
         robot.moveInches(25,1,10);
         robot.openClamp();
         }else if(coords[1] != 777){

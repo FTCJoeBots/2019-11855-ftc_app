@@ -55,8 +55,9 @@ public class blueFoundationParking extends LinearOpMode {
         telemetry.update();
 
         robot.init1(hardwareMap,this);
+        V.init(hardwareMap,this);
         waitForStart();
-
+/*
         //move to foundation
         robot.moveInches(32,0.25, 10);
         sleep(1000);
@@ -77,7 +78,29 @@ public class blueFoundationParking extends LinearOpMode {
         //back up under skybridge
         robot.moveInches(44,0.25,10);
 
+*/
 
+
+        robot.moveInches(29,0.5, 10);
+        sleep(1000);
+        robot.strafeSeconds(640,-0.7);
+        //grab foundation
+        robot.grabFoundation();
+
+        sleep(1000);
+        //drive into building site
+        robot.moveInches(-65, 0.35,15);
+        //robot.strafeSeconds(1200, .75);
+        //robot.moveInches(-10, 0.5, 10);
+
+        //release grabber
+        robot.releaseFoundation();
+        sleep(1000);
+
+        //back up under skybridge
+        robot.moveInches(18,1,10);
+        robot.strafeSeconds(500,1);
+        robot.moveInches(23,1,10);
 
 
 
@@ -88,3 +111,4 @@ public class blueFoundationParking extends LinearOpMode {
     }
 
 }
+

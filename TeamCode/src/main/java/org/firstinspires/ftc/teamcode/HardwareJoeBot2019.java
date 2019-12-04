@@ -262,10 +262,13 @@ public class HardwareJoeBot2019 {
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         shoulderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         shoulderMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        //while(lsWristDown.getState() != false)
+        //{
+            //run the motor until the limit switch trips
+            //wristMotor.setPower(-.2);
+        //}
 
         //set shoulderMotor to RUN_TO_POSITION mode
         shoulderMotor.setTargetPosition(0);
@@ -305,12 +308,12 @@ public class HardwareJoeBot2019 {
 
         //////////////////////////////////  INITIALIZE VUFORIA AND TENSOR FLOW OBJECT DETECTOR
         //initialize vuforia here because vuforia takes a while to init
-        initVuforia();
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            myOpMode.telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
+        //initVuforia();
+        //if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+        //    initTfod();
+        //} else {
+        //    myOpMode.telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        //}
         ////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1058,7 +1061,7 @@ public class HardwareJoeBot2019 {
         // This method assumes the wrist is already defined in the main robot init. It will move the
         // wrist "up" until the limit switch is pressed. Once up, it will reset the encoder to zero.
 
-        wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         while (myOpMode.opModeIsActive() && lsWristUp.getState() == false) {
 
             // Move the wrist up

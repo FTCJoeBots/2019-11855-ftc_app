@@ -124,15 +124,17 @@ public class Image_Recognition {
         stoneTarget.setName("Stone Target");
         myOpMode.telemetry.addLine("stone target defined");
         myOpMode.telemetry.update();
+        myOpMode.sleep(1000);
         myOpMode.telemetry.addLine("Ending init");
         myOpMode.telemetry.update();
+        myOpMode.sleep(1000);
         myOpMode.telemetry.addLine(" Starting Skysone Postion");
         myOpMode.telemetry.update();
         stoneTarget.setLocation(OpenGLMatrix
                 .translation(0, 0, stoneZ)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-
-
+        myOpMode.telemetry.addLine("DONE VUFORIA INIT....");
+        myOpMode.telemetry.update();
     }
 
     public double SkystonePostion() {
