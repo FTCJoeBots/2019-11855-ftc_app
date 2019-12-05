@@ -56,14 +56,41 @@ public class blueFoundationParkingAndSkystone extends LinearOpMode {
 
         V.init(hardwareMap,this);
         robot.init(hardwareMap,this);
+
+
+        //Start Looking for Skystone
+        double coords[] = {777,777};
+        int skystonePosition = 0; // 1= left; 2=center; 3=right
+
+        runtime.reset();
+
+        int i = 0;
+        while(runtime.seconds() < 10 && coords[1]!=777){
+            coords = V.skystone_cooridinates();
+            i= i + 1;
+            sleep(80);
+        }
+
+        if (coords[0] < 0) {
+            skystonePosition = 1;
+        } else if (coords[0] == 777) {
+            // we couldn't find the skystone, so we assume position 3
+            skystonePosition = 3;
+        } else {
+            skystonePosition = 2;
+        }
+
         waitForStart();
 
         //move to range of skystone
         //robot.moveInches(6.3,0.42, 10);
         //sleep(300);
 
+        /*
+        // Figure out where Skystone is
         double coords[] = {777,777};
 
+        int skystonePosition = 0; // 1= left; 2=center; 3=right
         int i = 0;
         while(i < 25){
             coords = V.skystone_cooridinates();
@@ -71,8 +98,98 @@ public class blueFoundationParkingAndSkystone extends LinearOpMode {
             sleep(80);
         }
 
+
+
+        if (coords[1] < 0) {
+            skystonePosition = 1;
+        } else if (coords[1] != 777) {
+            // we couldn't find the skystone, so we assume position 3
+            skystonePosition = 3;
+        } else {
+            skystonePosition = 2;
+        }
+
+        telemetry.addData("Skystone Location: ", skystonePosition);
+        telemetry.addData("X Coord: ", coords[1]);
+        telemetry.update();
+
+        */
+
+        // Drive forward
+        robot.moveInches(25,.2,10);
+
+        sleep(200);
+
+        // Decide left center or right
+        if (skystonePosition==1) {
+            // strafe left
+            robot.strafeSeconds(750,-.20);
+        } else if (skystonePosition == 2 ) {
+            // strafe right
+            robot.strafeSeconds(250,.20);
+        } else {
+            // strafe left
+            robot.strafeSeconds(250,-.20);
+        }
+sleep(600);
+
+        // lower wrist
+        robot.wristMotor.setTargetPosition(robot.WRIST_MIN_POS);
+        while (robot.wristMotor.isBusy()) {
+
+            idle();
+
+        }
+
+        // Drive forward
+        robot.moveInches(12,.2,10);
+sleep(300);
+        // close clamp
+        robot.closeClamp();
+sleep(300);
+        // raise arm
+        robot.moveShoulder(700);
+
+        // drive backwards
+        robot.moveInches(-11,.2,10);
+
+        // rotate 90-degrees CCW
+        robot.rotateDegrees(-90,.2);
+
+
+        // Drive Straight (Decide how far based on left center right)
+        if (skystonePosition==1) {
+            //  forward
+            robot.moveInches(50,.2,10);
+        } else if (skystonePosition == 2 ) {
+            // forward
+            robot.moveInches(55,.2,10);
+        } else {
+            // forward
+            robot.moveInches(60,.2,10);
+        }
+
+        // rotate 90
+        robot.rotateDegrees(90,.2);
+
+        // drop block
+        robot.openClamp();
+
+        // rotate 90 counterclockwise
+        robot.rotateDegrees(-90,.2);
+
+        // drive backwards to parking spot
+        robot.moveInches(-25,.2,10);
+
+
+
+
+
+
+
+/*
         if(coords[1] < 0){
-        robot.strafeSeconds(80,-.5);
+        robot.strafeSeconds(-50,.5);
         robot.moveInches(35,.75 ,10);
         robot.closeClamp();
         robot.moveInches(-13,.75,10);
@@ -83,7 +200,7 @@ public class blueFoundationParkingAndSkystone extends LinearOpMode {
         robot.openClamp();
         }else if(coords[1] != 777){
 
-            robot.strafeSeconds(300,1);
+            robot.strafeSeconds(-300,1);
             robot.moveInches(35,.5,10);
             robot.closeClamp();
             robot.moveInches(-13,.75,10);
@@ -100,9 +217,10 @@ public class blueFoundationParkingAndSkystone extends LinearOpMode {
             robot.strafeSeconds(900,1);
             robot.moveInches(25,1,10);
             robot.openClamp();
+
         }
 
-
+*/
 
 
 

@@ -81,7 +81,7 @@ public class Image_Recognition {
     WebcamName webcamName = null;
 
     final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    final boolean PHONE_IS_PORTRAIT = true;
+    final boolean PHONE_IS_PORTRAIT = false;
 
 
     final String VUFORIA_KEY =
