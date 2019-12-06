@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Red Foundation", group="Pushbot")
 
-public class RedFoundationParking extends LinearOpMode {
+public class   RedFoundationParking extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareJoeBot2019      robot   = new HardwareJoeBot2019();   // Use a Pushbot's hardware
@@ -57,19 +57,19 @@ public class RedFoundationParking extends LinearOpMode {
 
         robot.init1(hardwareMap,this);
         waitForStart();
-
+        robot.wristMotor.setTargetPosition(robot.WRIST_MIN_POS);
         //move to foundation
         robot.moveInches(-32,0.25, 10);
         sleep(1000);
-        robot.strafeSeconds(640,-0.7);
+        robot.strafeSeconds(620,-0.7);
         //grab foundation
         robot.grabFoundation();
 
         sleep(1000);
         //drive into building site
         robot.moveInches(80, 0.25,15);
-        robot.strafeSeconds(500, 0.5);
-        robot.moveInches(20, 0.25, 10);
+        robot.strafeSeconds(1500, 0.5);
+        robot.moveInches(5, 0.25, 10);
 
         //release grabber
         robot.releaseFoundation();

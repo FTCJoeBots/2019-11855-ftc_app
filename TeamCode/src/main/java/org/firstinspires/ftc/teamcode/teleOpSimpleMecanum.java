@@ -77,6 +77,8 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
         robot.wristInit();
 
+        robot.wristMotor.setTargetPosition(robot.WRIST_MIN_POS);
+
         waitForStart();
 
 

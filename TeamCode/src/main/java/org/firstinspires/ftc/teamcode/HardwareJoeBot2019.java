@@ -142,8 +142,8 @@ public class HardwareJoeBot2019 {
     static final int SHOULDER_MAX_POS = 4200;
 
     static final int WRIST_START_POS = 0;
-    static final int WRIST_MIN_POS = -150;
-    static final int WRIST_MAX_POS = -320;
+    public static final int WRIST_MIN_POS = -180;
+    public static final int WRIST_MAX_POS = -350;
 
     static final int TURRET_MAX = -4050;
     static final int TURRET_MIN = 10;
@@ -706,9 +706,9 @@ public class HardwareJoeBot2019 {
 
         double targetPower = 0;
 
-        double maxPower = 1;
+        double maxPower = .6;
 
-        double minPower = .1;
+        double minPower = .2;
 
         while(myOpMode.opModeIsActive() && abs(error)>closeEnough){
 
