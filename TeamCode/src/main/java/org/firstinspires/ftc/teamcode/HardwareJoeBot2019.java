@@ -135,15 +135,15 @@ public class HardwareJoeBot2019 {
     static final double FOUNDATION_UP = 0.2;
 
     static final double GRABBER_CLAMP_OPEN = 0.9;
-    static final double GRABBER_CLAMP_CLOSE = 0.45;
-    static final double GRABBER_CLAMP_MID = 0.7;
+    static final double GRABBER_CLAMP_CLOSE = 0.5;
+    static final double GRABBER_CLAMP_MID = 0.75;
   
     static final int SHOULDER_MIN_POS = 0;
     static final int SHOULDER_MAX_POS = 4200;
 
     static final int WRIST_START_POS = 0;
-    static final int WRIST_MIN_POS = -150;
-    static final int WRIST_MAX_POS = -320;
+    public static final int WRIST_MIN_POS = -180;
+    public static final int WRIST_MAX_POS = -350;
 
     static final int TURRET_MAX = -4050;
     static final int TURRET_MIN = 10;
@@ -237,19 +237,6 @@ public class HardwareJoeBot2019 {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         // Set all drive motors to run without encoders.
         // May want to switch to  RUN_USING_ENCODERS during autonomous
         motor0.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -262,12 +249,13 @@ public class HardwareJoeBot2019 {
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         shoulderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         shoulderMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-        //set shoulderMotor to RUN_TO_POSITION mode
+        wristInit();
+
+
         shoulderMotor.setTargetPosition(0);
         shoulderMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         shoulderMotor.setPower(.2);
@@ -280,7 +268,7 @@ public class HardwareJoeBot2019 {
         //Set TurrentMotor to start Position
         turretMotor.setTargetPosition(TURRET_MIN);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(0.99);
+        turretMotor.setPower(0.2);
 
 
 
@@ -305,12 +293,12 @@ public class HardwareJoeBot2019 {
 
         //////////////////////////////////  INITIALIZE VUFORIA AND TENSOR FLOW OBJECT DETECTOR
         //initialize vuforia here because vuforia takes a while to init
-        initVuforia();
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            myOpMode.telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
+        //initVuforia();
+        //if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+        //    initTfod();
+        //} else {
+        //    myOpMode.telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        //}
         ////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -455,7 +443,7 @@ public class HardwareJoeBot2019 {
         // rotations required to drive the given distance.
 
         // Tell Telemetry what we're starting
-        myOpMode.telemetry.log().add("Starting moveInches method");
+        //myOpMode.telemetry.log().add("Starting moveInches method");
 
         // Declare needed variables
         int newmotor0Target;
@@ -493,19 +481,19 @@ public class HardwareJoeBot2019 {
 
 
                 //Compose Telemetry message
-                myOpMode.telemetry.addLine("> Waiting for robot to reach target");
-                myOpMode.telemetry.addLine("Curr. Pos. |")
-                        .addData("0:", motor0.getCurrentPosition())
-                        .addData("1:", motor1.getCurrentPosition())
-                        .addData("2:", motor2.getCurrentPosition())
-                        .addData("3:", motor3.getCurrentPosition());
-                myOpMode.telemetry.addLine("Target | ")
-                        .addData("0:", newmotor0Target)
-                        .addData("1:", newmotor1Target)
-                        .addData("2:", newmotor2Target)
-                        .addData("3:", newmotor3Target);
-                myOpMode.telemetry.addData("Power: ", power);
-                myOpMode.telemetry.update();
+          //      myOpMode.telemetry.addLine("> Waiting for robot to reach target");
+            //    myOpMode.telemetry.addLine("Curr. Pos. |")
+              //          .addData("0:", motor0.getCurrentPosition())
+                //        .addData("1:", motor1.getCurrentPosition())
+                  //      .addData("2:", motor2.getCurrentPosition())
+                    //    .addData("3:", motor3.getCurrentPosition());
+                //myOpMode.telemetry.addLine("Target | ")
+                //        .addData("0:", newmotor0Target)
+                //        .addData("1:", newmotor1Target)
+                //        .addData("2:", newmotor2Target)
+                //        .addData("3:", newmotor3Target);
+                //myOpMode.telemetry.addData("Power: ", power);
+                //myOpMode.telemetry.update();
 
                 myOpMode.idle();
             }
@@ -514,7 +502,7 @@ public class HardwareJoeBot2019 {
             stop();
 
             // Update telemetry log
-            myOpMode.telemetry.log().add("Ending moveInches method");
+            //myOpMode.telemetry.log().add("Ending moveInches method");
 
             // Set the motors back to standard mode
             setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -718,9 +706,9 @@ public class HardwareJoeBot2019 {
 
         double targetPower = 0;
 
-        double maxPower = 1;
+        double maxPower = .6;
 
-        double minPower = .1;
+        double minPower = .2;
 
         while(myOpMode.opModeIsActive() && abs(error)>closeEnough){
 
@@ -1059,13 +1047,30 @@ public class HardwareJoeBot2019 {
         // wrist "up" until the limit switch is pressed. Once up, it will reset the encoder to zero.
 
         wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while (myOpMode.opModeIsActive() && lsWristUp.getState() == false) {
+        while (lsWristUp.getState() == true) {
 
             // Move the wrist up
-            wristMotor.setPower(-0.2);
+            wristMotor.setPower(0.2);
+
+            myOpMode.telemetry.addLine("Still in WristInit mode");
+            myOpMode.telemetry.update();
 
         }
 
+
+        if (lsWristDown.getState() == true) {
+            myOpMode.telemetry.addData("Wrist Down Sensor >> ", "Is Not Pressed");
+        } else {
+            myOpMode.telemetry.addData("Wrist Down Sensor >> ", "Is Pressed");
+        }
+
+        if (lsWristUp.getState() == true) {
+            myOpMode.telemetry.addData("Wrist Up Sensor >> ", "Is Not Pressed");
+        } else {
+            myOpMode.telemetry.addData("Wrist Up Sensor >> ", "Is Pressed");
+        }
+
+        myOpMode.telemetry.update();
         wristMotor.setPower(0);
 
         wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

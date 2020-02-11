@@ -38,12 +38,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
-@Autonomous(name="doomsday red 2", group="Pushbot")
+@Autonomous(name="Skystone and Red Foundation", group="Pushbot")
 //@Disabled
-public class doomsdayAuto1Red extends LinearOpMode {
+public class redFoundationParkingAndSkystone extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareJoeBot2019      robot   = new HardwareJoeBot2019();   // Use a Pushbot's hardware
+    Image_Recognition    V = new Image_Recognition();
     private ElapsedTime     runtime = new ElapsedTime();
 
 
@@ -54,18 +55,44 @@ public class doomsdayAuto1Red extends LinearOpMode {
         telemetry.update();
 
         robot.init1(hardwareMap,this);
-
         waitForStart();
 
-        robot.moveInches(-17,0.5,10);
 
-        robot.strafeSeconds(900,0.5);
+
+       // robot.moveInches(24,0.45,10);
+
+        //strafe intil skystone goes here
+
+
+
+
+        //move to foundation
+        robot.moveInches(-29,0.5, 10);
+        sleep(1000);
+        robot.strafeSeconds(640,-0.7);
+        //grab foundation
+        robot.grabFoundation();
+
+        sleep(1000);
+        //drive into building site
+        robot.moveInches(65, 0.35,15);
+        robot.strafeSeconds(700, .75);
+        //robot.moveInches(10, 0.5, 10);
+
+        //release grabber
+        robot.releaseFoundation();
+        sleep(1000);
+
+        //back up under skybridge
+        robot.moveInches(-44,0.5,10);
+
+
+
+
 
 
         telemetry.addLine("We're done. Press stop.");
         telemetry.update();
-
-
 
     }
 

@@ -57,7 +57,7 @@ public class doomsdayAutoRed extends LinearOpMode {
 
         waitForStart();
 
-        robot.strafeSeconds(1000,0.25);
+        robot.strafeSeconds(1050,0.25);
 
 
         telemetry.addLine("We're done. Press stop.");

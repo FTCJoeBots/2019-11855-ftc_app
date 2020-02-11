@@ -77,6 +77,8 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
         robot.wristInit();
 
+        robot.wristMotor.setTargetPosition(robot.WRIST_MIN_POS);
+
         waitForStart();
 
 
@@ -87,7 +89,7 @@ public class teleOpSimpleMecanum extends LinearOpMode {
 
 
             // Set SPEED LIMIT
-            currState1A = gamepad1.a;
+            currState1A = gamepad1.y;
             if (currState1A && currState1A != prevState1A) {
 
                 // This is the toggle for the Speed Limit
