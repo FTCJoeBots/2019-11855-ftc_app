@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
+package org.firstinspires.ftc.teamcode;/* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -39,9 +39,9 @@ import org.firstinspires.ftc.teamcode.Image_Recognition;
  *
  */
 
-@Autonomous(name="Blue Random Block", group="Pushbot")
+@Autonomous(name="Red Random Block", group="Pushbot")
 //@Disabled
-public class blueFoundationParkingAndRandomBlock extends LinearOpMode {
+public class redFoundationParkingAndRandomBlock extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareJoeBot2019      robot   = new HardwareJoeBot2019();   // Use a Pushbot's hardware
@@ -123,15 +123,14 @@ public class blueFoundationParkingAndRandomBlock extends LinearOpMode {
 */
         // Decide left center or right
 
-       // robot.wristMotor.setTargetPosition(robot.WRIST_MIN_POS);
+        //robot.wristMotor.setTargetPosition(robot.WRIST_MIN_POS);
 
-
-        // Drive forward
+// Drive forward
         robot.moveInches(21,.25,10);
-sleep(600);
+        sleep(600);
         // close clamp
         robot.closeClamp();
-sleep(600);
+        sleep(600);
         // raise arm
         robot.moveShoulder(700);
 
@@ -139,28 +138,30 @@ sleep(600);
         robot.moveInches(-4,.25,10);
 
         // rotate 90-degrees CCW
-        robot.rotateDegrees(-87,.2);
+        robot.rotateDegrees(87,.2);
 
 
         // Drive Straight (Decide how far based on left center right)
-       robot.moveInches(45,.25,10);
+        robot.moveInches(45,.25,10);
 
         // rotate 90
-        robot.rotateDegrees(87,.2);
-sleep(500);
+        robot.rotateDegrees(-87,.2);
+        sleep(500);
         robot.moveInches(-2,.25,10);
         // drop block
         robot.openClamp();
-sleep(500);
+        sleep(500);
         // rotate 90 counterclockwise
         //robot.moveInches(2,0.25,10);
-        robot.moveInches(-3,.25,10);
-        robot.rotateDegrees(-87,.2);
-sleep(500);
+        robot.moveInches(-1,.25,10);
+        robot.rotateDegrees(87,.2);
+        sleep(500);
         robot.moveShoulder(0);
-sleep(500);
+        sleep(500);
         // drive backwards to parking spot
         robot.moveInches(-30,.2,10);
+
+
 
 
 
@@ -207,7 +208,7 @@ sleep(500);
 
 
 
-/*
+
         //move to foundation
        // robot.moveInches(29,0.5, 10);
         sleep(1000);
@@ -229,7 +230,7 @@ sleep(500);
         robot.moveInches(18,1,10);
         robot.strafeSeconds(500,1);
         robot.moveInches(23,1,10);
-*/
+
 
 
 

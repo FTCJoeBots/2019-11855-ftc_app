@@ -67,7 +67,7 @@ public class   RedFoundationParking extends LinearOpMode {
 
         sleep(1000);
         //drive into building site
-        robot.moveInches(80, 0.25,15);
+        robot.moveInches(55, 0.25,15);
         robot.strafeSeconds(1500, 0.5);
         robot.moveInches(5, 0.25, 10);
 

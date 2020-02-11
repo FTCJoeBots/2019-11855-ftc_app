@@ -38,9 +38,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
-@Autonomous(name="doomsday red 2", group="Pushbot")
+@Autonomous(name="doomsday blue 2 wait", group="Pushbot")
 //@Disabled
-public class doomsdayAuto1Red extends LinearOpMode {
+public class doomsdayAutoBlue2b extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareJoeBot2019      robot   = new HardwareJoeBot2019();   // Use a Pushbot's hardware
@@ -57,9 +57,13 @@ public class doomsdayAuto1Red extends LinearOpMode {
 
         waitForStart();
 
+        sleep(20000);
+
         robot.moveInches(-17,0.5,10);
 
-        robot.strafeSeconds(900,-0.5);
+        robot.strafeSeconds(900,    0.5);
+
+
 
 
         telemetry.addLine("We're done. Press stop.");

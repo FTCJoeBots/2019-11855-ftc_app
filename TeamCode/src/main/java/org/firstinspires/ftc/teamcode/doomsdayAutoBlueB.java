@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
-@Autonomous(name="doomsday red 1", group="Pushbot")
+@Autonomous(name="doomsday red 2 wait", group="Pushbot")
 //@Disabled
 public class doomsdayAutoBlueB extends LinearOpMode {
 
@@ -59,7 +59,7 @@ public class doomsdayAutoBlueB extends LinearOpMode {
 
         sleep(20000);
 
-        robot.moveInches(17,0.5,10);
+        robot.moveInches(-17,0.5,10);
 
         robot.strafeSeconds(900,-0.5);
 
