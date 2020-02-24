@@ -57,9 +57,9 @@ public class doomsdayAuto1Blue extends LinearOpMode {
 
         waitForStart();
 
-        robot.moveInches(17,0.5,10);
+        robot.moveInches(-17,0.5,10);
 
-        robot.strafeSeconds(900,-0.5);
+        robot.strafeSeconds(900,0.5);
 
 
         telemetry.addLine("We're done. Press stop.");
